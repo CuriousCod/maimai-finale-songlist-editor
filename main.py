@@ -1,6 +1,9 @@
 import os, sys
 import TableFormat
 import sqlite3 as sq
+import Templates as tmpl
+import Convert as cvrt
+import MaiCrypt
 from sqlite3 import Error
 import DatabaseActions as dba
 import Helpers as hlp
@@ -30,7 +33,6 @@ def InitDb(conn):
         CreateTable(conn, table)
 
 
-
 def ReadMmMusic(conn, path):
     dataLines = []
 
@@ -39,7 +41,6 @@ def ReadMmMusic(conn, path):
             if line.startswith("MMMUSIC"):
                 dataLines.append(line.replace("\n", "").replace("RST_MUSICTITLE_", "").replace("RST_MUSICARTIST_", ""))
 
-    splitDataLine = []
     for line in dataLines:
         dba.InsertLineToMusic(conn, hlp.SplitMusicOrScoreLine(line))
 
@@ -143,104 +144,154 @@ def LoadFilesIntoDb(conn, path):
 
 def GenerateMmMusicFromDb(conn):
     rows = dba.SelectMmMusic(conn)
+    lines = []
 
     for row in rows:
-        row = list(row)
+        lines.append(GenerateMmMusicRow(row))
 
-        # Add affix to title and artist
-        row[22] = f"RST_MUSICTITLE_{row[22]}"
-        row[23] = f"RST_MUSICARTIST_{row[23]}"
+    return lines
 
-        # Set row spacings
-        row[0] = hlp.SetSpacing(row[0], 3)
-        row[3] = hlp.SetSpacing(row[3], 2)
-        row[4] = hlp.SetSpacing(row[4], 7)
-        row[10] = hlp.SetSpacing(row[10], 8)
-        row[12] = hlp.SetSpacing(row[12], 6)
-        row[13] = hlp.SetSpacing(row[13], 6)
-        row[14] = hlp.SetSpacing(row[14], 3)
-        row[15] = hlp.SetSpacing(row[15], 2)
-        row[16] = hlp.SetSpacing(row[16], 2)
-        row[17] = hlp.SetSpacing(row[17], 8)
-        row[24] = hlp.SetSpacing(row[24], 6)
-        row[25] = hlp.SetSpacing(row[25], 6)
 
-        # Calculate the space between filename and ) symbol
-        lastRowSpacing = 25 - len(row[26]) - 2  # "" marks
+def GenerateMmMusicRow(row):
+    row = list(row)
 
-        space = ""
-        for i in range(lastRowSpacing):
-            space += " "  # Add the proper amount of spacing
+    # Add affix to title and artist
+    row[22] = f"RST_MUSICTITLE_{row[22]}"
+    row[23] = f"RST_MUSICARTIST_{row[23]}"
 
-        print(
-            f"MMMUSIC( {row[0]}{row[1]}, {row[2]}, {row[3]}{row[4]}{row[5]}, {row[6]}, {row[7]}, {row[8]}, {row[9]}, {row[10]}"
-            f"{row[11]}, {row[12]}{row[13]}{row[14]}{row[15]}{row[16]}{row[17]}{row[18]}, {row[19]}, {row[20]}, {row[21]}, {row[22]}, "
-            f"{row[23]}, {row[24]}{row[25]}\"{row[26]}\"{space}) ///< {row[1].replace(' ', '').replace(',', '')}")
+    # Set row spacings
+    row[0] = hlp.SetSpacing(row[0], 3)
+    row[3] = hlp.SetSpacing(row[3], 2)
+    row[4] = hlp.SetSpacing(row[4], 7)
+    row[10] = hlp.SetSpacing(row[10], 8)
+    row[12] = hlp.SetSpacing(row[12], 6)
+    row[13] = hlp.SetSpacing(row[13], 6)
+    row[14] = hlp.SetSpacing(row[14], 3)
+    row[15] = hlp.SetSpacing(row[15], 2)
+    row[16] = hlp.SetSpacing(row[16], 2)
+    row[17] = hlp.SetSpacing(row[17], 8)
+    row[24] = hlp.SetSpacing(row[24], 6)
+    row[25] = hlp.SetSpacing(row[25], 6)
 
-        """ Without dynamic row adjustment
-        print(
-            f"MMMUSIC( {row[0]},   {row[1]}, {row[2]}, {row[3]}, {row[4]},     {row[5]}, {row[6]}, {row[7]}, {row[8]}, {row[9]}, {row[10]},        "
-            f"{row[11]}, {row[12]},     {row[13]},     {row[14]},   {row[15]},  {row[16]},  {row[17]}, {row[18]}, {row[19]}, {row[20]}, {row[21]}, {row[22]}, "
-            f"{row[23]}, {row[24]}, {row[25]}, \"{row[26]}\"{space}) ///< {row[1]}")"""
+    # Calculate the space between filename and ) symbol
+    lastRowSpacing = 25 - len(row[26]) - 2  # "" marks
+
+    space = ""
+    for i in range(lastRowSpacing):
+        space += " "  # Add the proper amount of spacing
+
+    completeLine = f"MMMUSIC( {row[0]}{row[1]}, {row[2]}, {row[3]}{row[4]}{row[5]}, {row[6]}, {row[7]}, {row[8]}, {row[9]}, {row[10]}{row[11]}, " \
+           f"{row[12]}{row[13]}{row[14]}{row[15]}{row[16]}{row[17]}{row[18]}, {row[19]}, {row[20]}, {row[21]}, {row[22]}, {row[23]}, " \
+           f"{row[24]}{row[25]}\"{row[26]}\"{space}) ///< {row[1].replace(' ', '').replace(',', '')}"
+
+    # print(completeLine)
+
+    """
+    lines.append(
+        f"MMMUSIC( {row[0]}{row[1]}, {row[2]}, {row[3]}{row[4]}{row[5]}, {row[6]}, {row[7]}, {row[8]}, {row[9]}, {row[10]}"
+        f"{row[11]}, {row[12]}{row[13]}{row[14]}{row[15]}{row[16]}{row[17]}{row[18]}, {row[19]}, {row[20]}, {row[21]}, {row[22]}, "
+        f"{row[23]}, {row[24]}{row[25]}\"{row[26]}\"{space}) ///< {row[1].replace(' ', '').replace(',', '')}\n")"""
+
+    """ Without dynamic row adjustment
+    print(
+        f"MMMUSIC( {row[0]},   {row[1]}, {row[2]}, {row[3]}, {row[4]},     {row[5]}, {row[6]}, {row[7]}, {row[8]}, {row[9]}, {row[10]},        "
+        f"{row[11]}, {row[12]},     {row[13]},     {row[14]},   {row[15]},  {row[16]},  {row[17]}, {row[18]}, {row[19]}, {row[20]}, {row[21]}, {row[22]}, "
+        f"{row[23]}, {row[24]}, {row[25]}, \"{row[26]}\"{space}) ///< {row[1]}")"""
+
+    return completeLine
+
 
 def GenerateMmScoreFromDb(conn):
     rows = dba.SelectMmScore(conn)
+    lines = []
 
     for row in rows:
-        row = list(row)
+        lines.append(GenerateMmScoreRow(row))
 
-        # Set row spacings
-        row[0] = hlp.SetSpacing(row[0], 5)
-        row[1] = hlp.SetSpacing(row[1], 36)
-        row[2] = hlp.SetSpacing(row[2], 4)
-        row[3] = hlp.SetSpacing(row[3], 2)
+    return lines
 
-        # Calculate the space between filename and ) symbol
-        lastRowSpacing = 32 - len(row[5]) - 2  # "" marks
 
-        space = ""
-        for i in range(lastRowSpacing):
-            space += " "  # Add the proper amount of spacing
+def GenerateMmScoreRow(row):
+    row = list(row)
 
-        print(f"MMSCORE( {row[0]}{row[1]}{row[2]}{row[3]}{row[4]}, \"{row[5]}\"{space}) ///< {row[1].replace(' ', '').replace(',', '')}")
+    # Set row spacings
+    row[0] = hlp.SetSpacing(row[0], 5)
+    row[1] = hlp.SetSpacing(row[1], 36)
+    row[2] = hlp.SetSpacing(row[2], 4)
+    row[3] = hlp.SetSpacing(row[3], 2)
+
+    # Calculate the space between filename and ) symbol
+    lastRowSpacing = 32 - len(row[5]) - 2  # "" marks
+
+    space = ""
+    for i in range(lastRowSpacing):
+        space += " "  # Add the proper amount of spacing
+
+    # print( f"MMSCORE( {row[0]}{row[1]}{row[2]}{row[3]}{row[4]}, \"{row[5]}\"{space}) ///< {row[1].replace(' ',
+    # '').replace(',', '')}")
+
+    return f"MMSCORE( {row[0]}{row[1]}{row[2]}{row[3]}{row[4]}, \"{row[5]}\"{space}) ///< {row[1].replace(' ', '').replace(',', '')}"
 
 
 def GenerateMmTextoutExFromDb(conn):
+    artists = []
+    tracks = []
+
     rows = dba.SelectMmTextoutArtist(conn)
 
     for row in rows:
-        row = list(row)
-
-        print(f"MMTEXTOUT( L\"RST_MUSICARTIST_{row[0]}\" ,L\"{row[1]}\" )")
+        artists.append(f"MMTEXTOUT( L\"RST_MUSICARTIST_{row[0]}\" ,L\"{row[1]}\" )")
 
     rows = dba.SelectMmTextoutTrack(conn)
 
     for row in rows:
-        print(f"MMTEXTOUT( L\"RST_MUSICTITLE_{row[0]}\" ,L\"{row[1]}\" )")
+        tracks.append(f"MMTEXTOUT( L\"RST_MUSICTITLE_{row[0]}\" ,L\"{row[1]}\" )")
+
+    return artists + tracks
 
 
 def GenerateMmTextoutJpFromDb(conn):
+    artists = []
+    tracks = []
+
     rows = dba.SelectMmTextoutArtist(conn)
 
     for row in rows:
-        row = list(row)
-
-        print(f"MMTEXTOUT( L\"RST_MUSICARTIST_{row[0]}\" ,L\"{row[2]}\" )")
+        artists.append(f"MMTEXTOUT( L\"RST_MUSICARTIST_{row[0]}\" ,L\"{row[2]}\" )")
 
     rows = dba.SelectMmTextoutTrack(conn)
 
     for row in rows:
-        print(f"MMTEXTOUT( L\"RST_MUSICTITLE_{row[0]}\" ,L\"{row[2]}\" )")
+        tracks.append(f"MMTEXTOUT( L\"RST_MUSICTITLE_{row[0]}\" ,L\"{row[2]}\" )")
 
+    return artists + tracks
 
 def GenerateSoundBgmFromDb(conn):
     rows = dba.SelectSoundBgm(conn)
-    print(f"TUTORIAL, 026,")
-    print(f"TUTORIAL_EN, 074,")
-    print(f"OMAKASE, 430,\n")
+    lines = []
 
     for row in rows:
-        print(f"{row[0]},{row[1]}")
+        # print(f"{row[0]},{row[1]}")
+        lines.append(f"{row[0]},{row[1]}")
+
+    return lines
+
+
+def EncryptFilesInOutput():
+    with open(f"{os.getcwd()}/key.txt", "r") as f:
+        key = f.readline()
+
+    crypt = MaiCrypt.MaiFinaleCrypt(key)
+
+    if not os.path.isdir(f"{os.getcwd()}/output/encrypted"):
+        os.mkdir(f"{os.getcwd()}/output/encrypted")
+
+    for file in os.listdir(f"{os.getcwd()}/output"):
+        if file != "SoundBGM.txt" and not os.path.isdir(f"{os.getcwd()}/output/{file}"):
+            print(f"{os.getcwd()}/output/{file}")
+            cipher_text = crypt.convert_to_bin(f"{os.getcwd()}/output/{file}")
+            with open(f"{os.getcwd()}/output/encrypted/{file.replace('.txt', '')}", "wb") as f:
+                f.write(cipher_text)
 
 
 if __name__ == '__main__':
@@ -251,11 +302,24 @@ if __name__ == '__main__':
 
     path = r"L:\Games\SDEY_1.99"
     LoadFilesIntoDb(conn, path)
-    GenerateMmMusicFromDb(conn)
+    # GenerateMmMusicFromDb(conn)
     # GenerateMmScoreFromDb(conn)
     # GenerateMmTextoutExFromDb(conn)
     # GenerateMmTextoutJpFromDb(conn)
     # GenerateSoundBgmFromDb(conn)
+
+    # dba.InsertLineToMusic(conn, cvrt.ConvertMmMusicLineFromGreentoFinale(340))
+    # dba.InsertLineToScore(conn, cvrt.ConvertMmScoreLineFromGreentoFinale(34001))
+    # dba.InsertLineToSoundBgm(conn, cvrt.ConvertSoundBgmLineFromGreentoFinale(164))
+    # dba.InsertLineToTextOutArtist(conn, cvrt.ConvertMmTextOutArtistFromGreenToFinale(20))
+    # dba.InsertLineToTextOutArtist(conn, cvrt.ConvertMmTextOutArtistFromGreenToFinale(20))
+
+    tmpl.CreateMmMusicFromTemplate(GenerateMmMusicFromDb(conn))
+    tmpl.CreateMmScoreFromTemplate(GenerateMmScoreFromDb(conn))
+    tmpl.CreateSoundBgmFromTemplate(GenerateSoundBgmFromDb(conn))
+    tmpl.CreateMmTextOutEx(GenerateMmTextoutExFromDb(conn))
+    tmpl.CreateMmTextOutJp(GenerateMmTextoutJpFromDb(conn))
+    EncryptFilesInOutput()
 
     # dba.InsertLineToTextOutExTrack(conn, ["0020", "love circulation"])
     # dba.UpdateLineToTextOutJpTrack(conn, ["恋愛サーキュレーション", "0020"])

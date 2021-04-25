@@ -28,6 +28,17 @@ def InsertLineToScore(conn, line):
     return
 
 
+def InsertLineToTextOutArtist(conn, line):
+    Insert = """INSERT INTO mm_textout_artist(artist_id, ex_track_artist, jp_track_artist) VALUES(?,?,?) """
+
+    cur = conn.cursor()
+    try:
+        cur.execute(Insert, line)
+        conn.commit()
+    except sq.IntegrityError:
+        pass
+    return
+
 def InsertLineToTextOutExArtist(conn, line):
     Insert = """INSERT INTO mm_textout_artist(artist_id, ex_track_artist) VALUES(?,?) """
 
@@ -52,12 +63,24 @@ def UpdateLineToTextOutJpArtist(conn, line):
     return
 
 
-def InsertLineToTextOutExTrack(conn, line):
-    update = """INSERT INTO mm_textout_track(track_id, ex_track_title) VALUES(?,?) """
+def InsertLineToTextOutTrack(conn, line):
+    Insert = """INSERT INTO mm_textout_track(track_id, ex_track_title, jp_track_title) VALUES(?,?,?) """
 
     cur = conn.cursor()
     try:
-        cur.execute(update, line)
+        cur.execute(Insert, line)
+        conn.commit()
+    except sq.IntegrityError:
+        pass
+    return
+
+
+def InsertLineToTextOutExTrack(conn, line):
+    Insert = """INSERT INTO mm_textout_track(track_id, ex_track_title) VALUES(?,?) """
+
+    cur = conn.cursor()
+    try:
+        cur.execute(Insert, line)
         conn.commit()
     except sq.IntegrityError:
         pass
@@ -139,6 +162,17 @@ def SelectSoundBgm(conn):
 
     cur = conn.cursor()
     cur.execute(select)
+
+    rows = cur.fetchall()
+
+    return rows
+
+
+def SelectTitleIdAndArtistIdFromMmMusic(conn, trackId):
+    select = """SELECT title, artist FROM mm_music WHERE track_id = ? """
+
+    cur = conn.cursor()
+    cur.execute(select, (trackId,))
 
     rows = cur.fetchall()
 

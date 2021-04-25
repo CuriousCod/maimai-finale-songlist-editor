@@ -22,3 +22,14 @@ def SetSpacing(data, maxmimumSpace):
     data += space
 
     return data
+
+
+def AffixZeroesToString(text, requiredLength):
+    text = str(text)
+    if len(text) < requiredLength:
+        while requiredLength != len(text):
+            text = "0" + text
+        return text
+    else:
+        return text
+

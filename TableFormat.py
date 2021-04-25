@@ -56,7 +56,7 @@ MmTextOutTitleSq = """ CREATE TABLE IF NOT EXISTS mm_textout_track (
 SoundBgmSq = """ CREATE TABLE IF NOT EXISTS sound_bgm (
                     id integer PRIMARY KEY,
                     title text UNIQUE,
-                    track_id integer UNIQUE
+                    track_id text UNIQUE
                 );"""
 
 Tables = [MmMusicSq, MmScoreSq, MmTextOutArtistSq, MmTextOutTitleSq, SoundBgmSq]
