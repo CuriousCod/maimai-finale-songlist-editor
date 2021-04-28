@@ -21,7 +21,7 @@ def InsertLineToMusic(conn, line):
 
 
 def InsertLineToScore(conn, line):
-    sql = """INSERT INTO mm_score(track_id, name, lv, score_id, utage_mode, safename) VALUES(?,?,?,?,?,?) """
+    sql = """INSERT INTO mm_score(track_id, name, lv, designer_id, utage_mode, safename) VALUES(?,?,?,?,?,?) """
 
     return ExecuteSql(conn, sql, line)
 
@@ -74,6 +74,18 @@ def UpdateLineToTextOutJpTrack(conn, line):
     return ExecuteSql(conn, sql, line)
 
 
+def InsertLineToTextOutExDesigner(conn, line):
+    sql = """INSERT INTO mm_textout_designer(designer_id, ex_designer_name) VALUES(?,?) """
+
+    return ExecuteSql(conn, sql, line)
+
+
+def UpdateLineToTextOutJpDesigner(conn, line):
+    sql = """UPDATE mm_textout_designer SET jp_designer_name = ? WHERE designer_id = ? """
+
+    return ExecuteSql(conn, sql, line)
+
+
 def InsertLineToSoundBgm(conn, line):
     sql = """INSERT INTO sound_bgm(title, track_id) VALUES(?,?) """
 
@@ -94,7 +106,7 @@ def SelectMmMusic(conn):
 
 
 def SelectMmScore(conn):
-    select = """SELECT track_id, name, lv, score_id, utage_mode, safename FROM mm_score ORDER BY track_id"""
+    select = """SELECT track_id, name, lv, designer_id, utage_mode, safename FROM mm_score ORDER BY track_id"""
 
     cur = conn.cursor()
     cur.execute(select)
@@ -142,6 +154,18 @@ def SelectMmTextoutTrackById(conn, track_id):
 
     cur = conn.cursor()
     cur.execute(select, (track_id,))
+
+    rows = cur.fetchall()
+
+    return rows
+
+
+# ex and jp are the same
+def SelectMmTextoutDesigner(conn):
+    select = """SELECT designer_id, ex_designer_name, jp_designer_name FROM mm_textout_designer ORDER BY designer_id"""
+
+    cur = conn.cursor()
+    cur.execute(select)
 
     rows = cur.fetchall()
 

@@ -25,10 +25,11 @@ def ReadMmScore(conn, path):
     for line in dataLines:
         dba.InsertLineToScore(conn, hlp.SplitMusicOrScoreLine(line))
 
-
+# Designer name is same in jp and ex
 def ReadTextOutEx(conn, path):
     dataLinesArtist = []
     dataLinesTrack = []
+    dataLinesDesigner = []
 
     with open(path + r"/decrypted/mmtextout_ex.txt", "r", encoding="UTF16") as f:
         for line in f.readlines():
@@ -36,6 +37,8 @@ def ReadTextOutEx(conn, path):
                 dataLinesArtist.append(line.replace("\n", ""))
             if line.startswith("MMTEXTOUT( L\"RST_MUSICTITLE"):
                 dataLinesTrack.append(line.replace("\n", ""))
+            if line.startswith("MMTEXTOUT( L\"RST_SCORECREATOR"):
+                dataLinesDesigner.append(line.replace("\n", ""))
 
     for line in dataLinesArtist:
         splitDataLine = []
@@ -57,10 +60,21 @@ def ReadTextOutEx(conn, path):
         splitDataLine.append(line)
         dba.InsertLineToTextOutExTrack(conn, splitDataLine)
 
+    for line in dataLinesDesigner:
+        splitDataLine = []
+        id = line[line.find("CREATOR_") + 8:line.find("\" ,")]
+
+        # Remove the mess from the beginning and the end of the line
+        line = line[line.rfind("L\"") + 2:line.rfind("\" )")]
+        splitDataLine.append(id)
+        splitDataLine.append(line)
+        dba.InsertLineToTextOutExDesigner(conn, splitDataLine)
+
 
 def ReadTextOutJp(conn, path):
     dataLinesArtist = []
     dataLinesTrack = []
+    dataLinesDesigner = []
 
     with open(path + r"/decrypted/mmtextout_jp.txt", "r", encoding="UTF16") as f:
         for line in f.readlines():
@@ -68,6 +82,8 @@ def ReadTextOutJp(conn, path):
                 dataLinesArtist.append(line.replace("\n", ""))
             if line.startswith("MMTEXTOUT( L\"RST_MUSICTITLE"):
                 dataLinesTrack.append(line.replace("\n", ""))
+            if line.startswith("MMTEXTOUT( L\"RST_SCORECREATOR"):
+                dataLinesDesigner.append(line.replace("\n", ""))
 
     for line in dataLinesArtist:
         splitDataLine = []
@@ -88,6 +104,16 @@ def ReadTextOutJp(conn, path):
         splitDataLine.append(line)
         splitDataLine.append(id)
         dba.UpdateLineToTextOutJpTrack(conn, splitDataLine)
+
+    for line in dataLinesDesigner:
+        splitDataLine = []
+        id = line[line.find("CREATOR_") + 8:line.find("\" ,")]
+
+        # Remove the mess from the beginning and the end of the line
+        line = line[line.rfind("L\"") + 2:line.rfind("\" )")]
+        splitDataLine.append(line)
+        splitDataLine.append(id)
+        dba.UpdateLineToTextOutJpDesigner(conn, splitDataLine)
 
 
 def ReadSoundBgm(conn, path):

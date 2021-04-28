@@ -96,6 +96,7 @@ def GenerateMmScoreRow(row):
 def GenerateMmTextoutExFromDb(conn):
     artists = []
     tracks = []
+    designers = []
 
     rows = dba.SelectMmTextoutArtist(conn)
 
@@ -107,12 +108,18 @@ def GenerateMmTextoutExFromDb(conn):
     for row in rows:
         tracks.append(f"MMTEXTOUT( L\"RST_MUSICTITLE_{row[0]}\" ,L\"{row[1]}\" )")
 
-    return artists + tracks
+    rows = dba.SelectMmTextoutDesigner(conn)
+
+    for row in rows:
+        designers.append(f"MMTEXTOUT( L\"RST_SCORECREATOR_{row[0]}\" ,L\"{row[1]}\" )")
+
+    return artists + tracks + designers
 
 
 def GenerateMmTextoutJpFromDb(conn):
     artists = []
     tracks = []
+    designers = []
 
     rows = dba.SelectMmTextoutArtist(conn)
 
@@ -124,7 +131,12 @@ def GenerateMmTextoutJpFromDb(conn):
     for row in rows:
         tracks.append(f"MMTEXTOUT( L\"RST_MUSICTITLE_{row[0]}\" ,L\"{row[2]}\" )")
 
-    return artists + tracks
+    rows = dba.SelectMmTextoutDesigner(conn)
+
+    for row in rows:
+        designers.append(f"MMTEXTOUT( L\"RST_SCORECREATOR_{row[0]}\" ,L\"{row[2]}\" )")
+
+    return artists + tracks + designers
 
 
 def GenerateSoundBgmFromDb(conn):

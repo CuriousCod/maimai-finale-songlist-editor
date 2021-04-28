@@ -34,7 +34,7 @@ MmScoreSq = """ CREATE TABLE IF NOT EXISTS mm_score (
                     track_id integer UNIQUE,
                     name text NOT NULL,
                     lv text NOT NULL,
-                    score_id text NOT NULL,
+                    designer_id text NOT NULL,
                     utage_mode text NOT NULL,
                     safename text NOT NULL
                 );"""
@@ -53,10 +53,17 @@ MmTextOutTitleSq = """ CREATE TABLE IF NOT EXISTS mm_textout_track (
                     jp_track_title text
                 );"""
 
+MmTextOutDesignerSq = """ CREATE TABLE IF NOT EXISTS mm_textout_designer (
+                    id integer PRIMARY KEY,
+                    designer_id text UNIQUE,
+                    ex_designer_name text,
+                    jp_designer_name text
+                );"""
+
 SoundBgmSq = """ CREATE TABLE IF NOT EXISTS sound_bgm (
                     id integer PRIMARY KEY,
                     title text UNIQUE,
                     track_id text UNIQUE
                 );"""
 
-Tables = [MmMusicSq, MmScoreSq, MmTextOutArtistSq, MmTextOutTitleSq, SoundBgmSq]
+Tables = [MmMusicSq, MmScoreSq, MmTextOutArtistSq, MmTextOutTitleSq, MmTextOutDesignerSq, SoundBgmSq]
