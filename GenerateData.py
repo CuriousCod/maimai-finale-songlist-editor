@@ -140,7 +140,7 @@ def GenerateMmTextoutJpFromDb(conn):
 
 
 def GenerateSoundBgmFromDb(conn):
-    rows = dba.SelectSoundBgm(conn)
+    rows = dba.SelectSoundBgmOrderTitle(conn)
     lines = []
 
     for row in rows:
