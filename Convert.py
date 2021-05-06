@@ -1,4 +1,5 @@
 import Helpers as hlp
+import os
 
 # Functions to convert maimai green data to finale
 
@@ -98,3 +99,22 @@ def ConvertMmTextOutTrackFromGreenToFinale(track_id):
                     splitLines[2] = splitLines[2].replace("L\"", "").replace("\"", "")
 
                     return [track_id, splitLines[2], splitLines[1]]
+
+# MURASAKI -------------------------------------------------------------------------------------------------------------
+
+
+# Murasaki doesn't have Subcate(subcategory?) column
+def ConvertSplitMmMusicLineFromMurasakiToFinale(line):
+
+    newLine = []
+    if line is not None:
+        for enum, entry in enumerate(line):
+            if enum != 3:
+                newLine.append(entry)
+            else:
+                newLine.append(30) # Adding subcate as 30
+                newLine.append(entry)
+
+    return newLine
+
+

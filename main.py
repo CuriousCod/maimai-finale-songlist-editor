@@ -6,6 +6,7 @@ import Templates as tmpl
 import Convert as cvrt
 import ReadData as readDat
 import GenerateData as genDat
+import DearGui as dg
 import MaiCrypt
 import tkinter
 import shutil
@@ -16,7 +17,13 @@ import DatabaseActions as dba
 import Helpers as hlp
 from dearpygui import core, simple
 
+
 # TODO Include the tutorial values in SoundBGM.txt
+# TODO Include maimai filepaths in config
+# TODO Display all ids without data
+# TODO Function to check all data connections for an id
+# TODO Import all required data from other maimai versions based on mmusic id
+
 
 def CreateConnection(db_file):
     """ create a database connection to a SQLite database """
@@ -257,7 +264,6 @@ class GUI:
         for col in range(len(core.get_table_data(table)[0])):
             core.set_table_selection(table, selectedRow, col, True)
 
-
     def GetFirstSelectedCellValue(self, table):
         return core.get_table_item(table, core.get_table_selections(table)[0][0],
                                    core.get_table_selections(table)[0][1])
@@ -266,13 +272,15 @@ class GUI:
         with simple.window("window_selectMaimaiFiles", label="Select maimai files", y_pos=400):
             with simple.tab_bar("maimai Versions"):
                 with simple.tab("FiNALE"):
-                    core.add_button("filesFinale_button_selectMaimaiFolder", label="Select maimai FiNALE folder", callback=lambda: self.SelectMaimaiFolder("Finale"))
+                    core.add_button("filesFinale_button_selectMaimaiFolder", label="Select maimai FiNALE folder",
+                                    callback=lambda: self.SelectMaimaiFolder("Finale"))
                     core.add_input_text("filesFinale_input_mmMusic", label="mmMusic.bin")
                     core.add_input_text("filesFinale_input_mmScore", label="mmScore.bin")
                     core.add_input_text("filesFinale_input_mmTextoutEx", label="mmTextoutEx.bin")
                     core.add_input_text("filesFinale_input_mmTextoutJp", label="mmTextoutJp.bin")
                     core.add_input_text("filesFinale_input_soundBgm", label="soundBGM.txt")
-                    core.add_button("filesFinale_button_decryptFiles", label="Decrypt Files", callback=DecryptFilesInInput)
+                    core.add_button("filesFinale_button_decryptFiles", label="Decrypt Files",
+                                    callback=DecryptFilesInInput)
                     core.add_button("filesFinale_button_loadFilesIntoDatabase", label="Load Files Into Database",
                                     callback=lambda: LoadFilesIntoDb(f"{os.getcwd()}/input", self.db))
                 with simple.tab("Murasaki"):
@@ -285,6 +293,12 @@ class GUI:
                     core.add_input_text("filesMurasaki_input_soundBgm", label="soundBGM.txt")
                 with simple.tab("Green"):
                     pass
+        with simple.window("window_importMaimaiData", label="Import maimai data"):
+            core.add_input_int("import_input_importTrackId", min_value=0, step_fast=10, max_value=99999,
+                               label="Track Id", default_value=0)
+            core.add_combo("import_combo_importVersion", label="Import from version",
+                           items=["maimai Murasaki", "maimai Green"], default_value="maimai Murasaki")
+            core.add_button("import_button_importTrackId", label="Import data", callback=self.ImportData)
 
         # with simple.window("Browse Db"):
         #     core.add_text("Browse current data")
@@ -328,7 +342,8 @@ class GUI:
                 with simple.tab("Designer Name"):
                     core.add_text("Designer Name")
                     core.add_input_int("dataDesigner_input_addDesignerId", label="Designer ID", max_value=99,
-                                       min_value=0, step_fast=10, callback=self.GetDataFromDb, callback_data="GetDesignerName")
+                                       min_value=0, step_fast=10, callback=self.GetDataFromDb,
+                                       callback_data="GetDesignerName")
                     core.add_input_text("dataDesigner_input_addDesignerEx", label="Ex Designer")
                     core.add_input_text("dataDesigner_input_addDesignerJp", label="Jp Designer")
                     core.add_button("dataDesigner_button_addDesignerToDb", label="Add designer to database",
@@ -380,8 +395,6 @@ class GUI:
                     core.add_input_text("dataMmMusic_input_addFilename", label="Filename")
                     core.add_button("dataMmMusic_button_showMmMusicTable", label="Show music table",
                                     callback=self.DisplayTable, callback_data="mmMusic")
-                    # TODO WIP
-                    core.add_button("dataMmMusic_button_loadFromGreen", label="Load current track id from maimai Green", callback=lambda: print(cvrt.ConvertMmMusicLineFromGreentoFinale(core.get_value("dataMmMusic_input_addTrackId"))))
                     core.add_button("dataMmMusic_button_addTrackToDb", label="Add track to database",
                                     callback=self.InsertDataToDb, callback_data="InsertMmMusic")
                 with simple.tab("mmScore"):
@@ -427,7 +440,7 @@ class GUI:
             core.add_table("table_mmMusic", columns, height=0, width=0,
                            callback=lambda: [self.SelectTableRow("table_mmMusic"),
                                              core.set_value("dataMmMusic_input_addTrackId",
-                                             int(self.GetFirstSelectedCellValue("table_mmMusic"))),
+                                                            int(self.GetFirstSelectedCellValue("table_mmMusic"))),
                                              self.GetDataFromDb("", "GetMmMusic")])
 
         with simple.window("window_mmScoreDisplay", label="mmScore Grid", show=False):
@@ -435,7 +448,7 @@ class GUI:
             core.add_table("table_mmScore", columns, height=0, width=0,
                            callback=lambda: [self.SelectTableRow("table_mmScore"),
                                              core.set_value("dataMmScore_input_addTrackId",
-                                             int(self.GetFirstSelectedCellValue("table_mmScore"))),
+                                                            int(self.GetFirstSelectedCellValue("table_mmScore"))),
                                              self.GetDataFromDb("", "GetMmScore")])
 
         with simple.window("window_textoutArtistDisplay", label="Artist Name Grid", show=False):
@@ -443,7 +456,7 @@ class GUI:
             core.add_table("table_textoutArtist", columns, height=0, width=0,
                            callback=lambda: [self.SelectTableRow("table_textoutArtist"),
                                              core.set_value("dataArtist_input_addArtistId",
-                                             int(self.GetFirstSelectedCellValue("table_textoutArtist"))),
+                                                            int(self.GetFirstSelectedCellValue("table_textoutArtist"))),
                                              self.GetDataFromDb("", "GetArtist")])
 
         with simple.window("window_textoutTrackDisplay", label="Track Name Grid", show=False):
@@ -451,7 +464,7 @@ class GUI:
             core.add_table("table_textoutTrack", columns, height=0, width=0,
                            callback=lambda: [self.SelectTableRow("table_textoutTrack"),
                                              core.set_value("dataTrack_input_addTrackId",
-                                             int(self.GetFirstSelectedCellValue("table_textoutTrack"))),
+                                                            int(self.GetFirstSelectedCellValue("table_textoutTrack"))),
                                              self.GetDataFromDb("", "GetTrackName")])
 
         with simple.window("window_textoutDesignerDisplay", label="Track Designer Grid", show=False):
@@ -459,7 +472,8 @@ class GUI:
             core.add_table("table_textoutDesigner", columns, height=0, width=0,
                            callback=lambda: [self.SelectTableRow("table_textoutDesigner"),
                                              core.set_value("dataDesigner_input_addDesignerId",
-                                             int(self.GetFirstSelectedCellValue("table_textoutDesigner"))),
+                                                            int(self.GetFirstSelectedCellValue(
+                                                                "table_textoutDesigner"))),
                                              self.GetDataFromDb("", "GetDesignerName")])
 
         with simple.window("window_soundBgmDisplay", label="Sound BGM Grid", show=False):
@@ -467,7 +481,7 @@ class GUI:
             core.add_table("table_soundBgm", columns, height=0, width=0,
                            callback=lambda: [self.SelectTableRow("table_soundBgm"),
                                              core.set_value("dataSoundBgm_input_addTrackId",
-                                             int(self.GetFirstSelectedCellValue("table_soundBgm"))),
+                                                            int(self.GetFirstSelectedCellValue("table_soundBgm"))),
                                              self.GetDataFromDb("", "GetSoundBgm")])
 
         with simple.window("window_log", label="Log"):
@@ -568,7 +582,7 @@ class GUI:
             specialPv = "0"
             challengeTrack = "0"
             bonus = "0"
-            genreId =  hlp.GenreTextToFinaleValue(core.get_value("dataMmMusic_input_addGenre"))
+            genreId = hlp.GenreTextToFinaleValue(core.get_value("dataMmMusic_input_addGenre"))
             titleId = hlp.AffixZeroesToString(core.get_value("dataMmMusic_input_addTitleId"), 4)
             artistId = hlp.AffixZeroesToString(core.get_value("dataMmMusic_input_addArtistId"), 4)
             sortIndexJp = core.get_value("dataMmMusic_input_addSortJpIndex")
@@ -576,7 +590,8 @@ class GUI:
             filename = core.get_value("dataMmMusic_input_addFilename").lower()
 
             data = [trackId, name, version, subcate, bpm, sortId, dress, darkness, mile, videoBool, event, rec
-                    , pvStart, pvEnd, songDuration, offRanking, adDef, remaster, specialPv, challengeTrack, bonus, genreId, titleId, artistId, sortIndexJp, sortIndexEx, filename]
+                , pvStart, pvEnd, songDuration, offRanking, adDef, remaster, specialPv, challengeTrack, bonus, genreId,
+                    titleId, artistId, sortIndexJp, sortIndexEx, filename]
 
             if not (dba.InsertLineToMusic(tempConn, data)):
                 if core.get_value("data_checkbox_replaceDbEntry"):
@@ -673,33 +688,9 @@ class GUI:
 
             if len(row) > 0:
                 row = row[0]
-                core.set_value("dataMmMusic_input_addVersion", int(row[2]))
-                core.set_value("dataMmMusic_input_addBpm", float(row[4]))
-                core.set_value("dataMmMusic_input_addSortId", int(row[5]))
-                core.set_value("dataMmMusic_checkbox_addHasVideo", bool(hlp.ValueToBoolReversed(row[9])))
-                core.set_value("dataMmMusic_input_addPvStart", float(row[12]))
-                core.set_value("dataMmMusic_input_addPvEnd", float(row[13]))
-                core.set_value("dataMmMusic_input_addRemaster", int(row[17]))
-                core.set_value("dataMmMusic_input_addGenre", hlp.GenreValueToFinaleText(row[21]))
-                core.set_value("dataMmMusic_input_addTitleId", int(row[22]))
-                core.set_value("dataMmMusic_input_addArtistId", int(row[23]))
-                core.set_value("dataMmMusic_input_addSortJpIndex", int(row[24]))
-                core.set_value("dataMmMusic_input_addSortExIndex", int(row[25]))
-                core.set_value("dataMmMusic_input_addFilename", row[26])
+                dg.UpdateDataMmMusicFields(row)
             else:
-                core.set_value("dataMmMusic_input_addVersion", 10000)
-                core.set_value("dataMmMusic_input_addBpm", 0.00)
-                core.set_value("dataMmMusic_input_addSortId", 300000)
-                core.set_value("dataMmMusic_checkbox_addHasVideo", False)
-                core.set_value("dataMmMusic_input_addPvStart", 0.00)
-                core.set_value("dataMmMusic_input_addPvEnd", 0.00)
-                core.set_value("dataMmMusic_input_addRemaster", 99999999)
-                core.set_value("dataMmMusic_input_addGenre", "Pops & Anime")
-                core.set_value("dataMmMusic_input_addTitleId", 0)
-                core.set_value("dataMmMusic_input_addArtistId", 0)
-                core.set_value("dataMmMusic_input_addSortJpIndex", 0)
-                core.set_value("dataMmMusic_input_addSortExIndex", 0)
-                core.set_value("dataMmMusic_input_addFilename", "")
+                dg.DefaultDataMmMusicFields()
 
         elif data == "GetMmScore":
             trackId = core.get_value("dataMmScore_input_addTrackId")
@@ -729,6 +720,15 @@ class GUI:
             self.AppendLog("wip")
 
         tempConn.close()
+
+    def ImportData(self):
+        core.set_value("dataMmMusic_input_addTrackId", core.get_value("import_input_importTrackId"))
+
+        if (dg.UpdateDataMmMusicFields(cvrt.ConvertSplitMmMusicLineFromMurasakiToFinale(
+                readDat.ReadMmMusicSingleLine(core.get_value("filesMurasaki_input_mmMusic"),
+                                              core.get_value("import_input_importTrackId"))))):
+            pass
+            # TODO Score is next, first need to reimplement score ui
 
     def AppendLog(self, text):
         core.set_value("log_input_log",
@@ -783,7 +783,6 @@ class GUI:
 
 
 if __name__ == '__main__':
-
     # path = r"L:\Games\SDEY_1.99"
 
     # path = f"{os.getcwd()}/input"

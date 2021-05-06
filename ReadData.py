@@ -1,6 +1,8 @@
 import DatabaseActions as dba
 import Helpers as hlp
+import os
 
+# These are configured to be used with files from maimai FiNALE version
 
 def ReadMmMusic(conn, path):
     dataLines = []
@@ -14,6 +16,21 @@ def ReadMmMusic(conn, path):
         dba.InsertLineToMusic(conn, hlp.SplitMusicOrScoreLine(line))
 
 
+def ReadMmMusicSingleLine(fileFullname, trackId):
+    data = ""
+
+    if os.path.isfile(fileFullname):
+        with open(fileFullname, "r", encoding="UTF16") as f:
+            for line in f.readlines():
+                if line.startswith(f"MMMUSIC( {trackId},"):
+                    data = line.replace("\n", "").replace("RST_MUSICTITLE_", "").replace("RST_MUSICARTIST_", "")
+    else:
+        print("File not found")
+        return
+
+    return hlp.SplitMusicOrScoreLine(data)
+
+
 def ReadMmScore(conn, path):
     dataLines = []
 
@@ -24,6 +41,19 @@ def ReadMmScore(conn, path):
 
     for line in dataLines:
         dba.InsertLineToScore(conn, hlp.SplitMusicOrScoreLine(line))
+
+
+# def ReadMmScoreLine(fileFullname, trackId):
+#     dataLines = []
+#
+#     with open(fileFullname, "r", encoding="UTF16") as f:
+#         for line in f.readlines():
+#             if line.startswith("MMSCORE"):
+#                 dataLines.append(line.replace("\n", ""))
+#
+#     for line in dataLines:
+#         dba.InsertLineToScore(conn, hlp.SplitMusicOrScoreLine(line))
+
 
 # Designer name is same in jp and ex
 def ReadTextOutEx(conn, path):
