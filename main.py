@@ -18,7 +18,6 @@ import Helpers as hlp
 from dearpygui import core, simple
 
 
-# TODO Include the tutorial values in SoundBGM.txt
 # TODO Include maimai filepaths in config
 # TODO Display all ids without data
 # TODO Function to check all data connections for an id
@@ -436,7 +435,7 @@ class GUI:
                     core.add_same_line()
                     core.add_button("dataMmScore_button_showSoundBgmTable", label="Show sound table",
                                     callback=self.DisplayTable, callback_data="soundBgm")
-                core.add_checkbox("data_checkbox_replaceDbEntry", label="Overwrite current database entry")
+                core.add_checkbox("data_checkbox_replaceDbEntry", label="Overwrite existing database entry")
 
         with simple.window("window_generateMaimaiFiles", label="Generate maimai Files", x_pos=400):
             core.add_text("Generate data files for maimai FiNALE")
@@ -733,25 +732,12 @@ class GUI:
             trackId = core.get_value("dataMmScore_input_addTrackId")
             rows = dba.SelectMmScoreById(tempConn, hlp.AffixZeroesToString(trackId, 3))
 
-            for i in range(1, 7, 1):
-                core.set_value(f"dataMmScore_input_addScoreId_0{i}", 0)
-                core.set_value(f"dataMmScore_input_addDifficulty_0{i}", 0.0)
-                core.set_value(f"dataMmScore_input_addDesignerId_0{i}", 0)
-                core.set_value(f"dataMmScore_checkbox_addIsInUtage_0{i}", False)
-
-            core.set_value("dataMmScore_input_addBaseSafename", "")
-
-            for enum, row in enumerate(rows):
-                core.set_value(f"dataMmScore_input_addScoreId_0{enum + 1}", enum + 1)
-                core.set_value(f"dataMmScore_input_addDifficulty_0{enum + 1}", float(row[2]))
-                core.set_value(f"dataMmScore_input_addDesignerId_0{enum + 1}", int(row[3]))
-                core.set_value(f"dataMmScore_checkbox_addIsInUtage_0{enum + 1}", hlp.ValueToBoolReversed(row[4]))
-
-                if enum == 0:
-                    core.set_value(f"dataMmScore_input_addBaseSafename", row[5][4:-3])
+            # Reset fields first
+            dg.DefaultDataMmScoreFields()
+            dg.UpdateDataMmScoreFields(rows)
 
         elif data == "GetSoundBgm":
-            trackId = core.get_value("dataSoundBgm_input_addTrackId")
+            trackId = hlp.AffixZeroesToString(core.get_value("dataSoundBgm_input_addTrackId"), 3)
             row = dba.SelectSoundBgmById(tempConn, trackId)
 
             if len(row) > 0:
@@ -764,14 +750,19 @@ class GUI:
 
         tempConn.close()
 
+    # TODO Currently only supports Murasaki
     def ImportData(self):
         core.set_value("dataMmMusic_input_addTrackId", core.get_value("import_input_importTrackId"))
+        core.set_value("dataMmScore_input_addTrackId", core.get_value("import_input_importTrackId"))
 
-        if (dg.UpdateDataMmMusicFields(cvrt.ConvertSplitMmMusicLineFromMurasakiToFinale(
+        # mmMusic
+        dg.UpdateDataMmMusicFields(cvrt.ConvertSplitMmMusicLineFromMurasakiToFinale(
                 readDat.ReadMmMusicSingleLine(core.get_value("filesMurasaki_input_mmMusic"),
-                                              core.get_value("import_input_importTrackId"))))):
-            pass
-            # TODO Score is next, first need to reimplement score ui
+                                              core.get_value("import_input_importTrackId"))))
+
+        # mmScore
+        dg.DefaultDataMmScoreFields()
+        dg.UpdateDataMmScoreFields(readDat.ReadMmScoreLinesWithTrackId(core.get_value("filesMurasaki_input_mmScore"), core.get_value("import_input_importTrackId")))
 
     def AppendLog(self, text):
         core.set_value("log_input_log",

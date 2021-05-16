@@ -39,8 +39,42 @@ def CreateSoundBgmFromTemplate(bgmLines):
         os.mkdir(f"{os.getcwd()}/output")
 
     with open(f"{os.getcwd()}/output/SoundBGM.txt", "w", encoding="UTF8") as f:
-        f.writelines(templateLines)
+        # Template is not needed anymore as special bgms are handled dynamically
+        # f.writelines(templateLines)
+        # f.write("\n")
+
+        # Reorder special bgms
+        specialBGM = {"tutorial": None, "tutorial_en": None, "omakase": None}
+
+        for enum, line in enumerate(bgmLines):
+            splitted = line.split(",")
+            if splitted[0] == "TUTORIAL":
+                specialBGM["tutorial"] = enum
+            elif splitted[0] == "TUTORIAL_EN":
+                specialBGM["tutorial_en"] = enum
+            elif splitted[0] == "OMAKASE":
+                specialBGM["omakase"] = enum
+
+        indexes = []
+
+        # Add special bgms to the top of the file
+        for value in specialBGM.values():
+            if value is not None:
+                # Add that extra space after the comma for these "special bgms"
+                splitted = bgmLines[value].split(",")
+
+                f.write(f"{splitted[0]}, {splitted[1]},\n")
+                indexes.append(value)
+
+        # Remove special bgms from the list, so they aren't written again
+        sorted(indexes, reverse=True)
+        print(indexes)
+        for indx in indexes:
+            bgmLines.pop(indx)
+
         f.write("\n")
+
+        # Write rest of the lines
         for line in bgmLines:
             f.write(line + "\n")
 

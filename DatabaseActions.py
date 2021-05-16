@@ -236,7 +236,7 @@ def SelectMmTextoutDesigner(conn):
     return rows
 
 def SelectMmTextoutDesignerById(conn, designer_id):
-    select = """SELECT designer_id, ex_designer_name, jp_designer_name FROM mm_textout_designer WHERE designer_id = ? ORDER BY designer_id"""
+    select = """SELECT ex_designer_name, jp_designer_name FROM mm_textout_designer WHERE designer_id = ? ORDER BY designer_id"""
 
     cur = conn.cursor()
     cur.execute(select, (designer_id,))

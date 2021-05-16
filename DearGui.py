@@ -2,27 +2,6 @@ from dearpygui import core, simple
 import Helpers as hlp
 
 
-# def ImportedMmMusicLineToGuiFormat(line):
-#     guiLine = []
-#
-#     guiLine.append(line[0])
-#     guiLine.append(line[2])
-#     guiLine.append(line[4])
-#     guiLine.append(line[5])
-#     guiLine.append(line[9])
-#     guiLine.append(line[12])
-#     guiLine.append(line[13])
-#     guiLine.append(line[17])
-#     guiLine.append(line[21])
-#     guiLine.append(line[22])  # Title
-#     guiLine.append(line[23])  # Artist
-#     guiLine.append(line[24])
-#     guiLine.append(line[25])
-#     guiLine.append(line[26])
-#
-#     return guiLine
-
-
 def UpdateDataMmMusicFields(row):
     if len(row) == 27:
         core.set_value("dataMmMusic_input_addVersion", int(row[2]))
@@ -88,3 +67,22 @@ def DefaultDataMmMusicFields():
     core.set_value("dataMmMusic_hidden_specialPv", "0")
     core.set_value("dataMmMusic_hidden_challengeTrack", "0")
     core.set_value("dataMmMusic_hidden_bonus", "0")
+
+
+def UpdateDataMmScoreFields(rows):
+    for enum, row in enumerate(rows):
+        core.set_value(f"dataMmScore_input_addScoreId_0{enum + 1}", int(str(row[0])[-2:]))
+        core.set_value(f"dataMmScore_input_addDifficulty_0{enum + 1}", float(row[2]))
+        core.set_value(f"dataMmScore_input_addDesignerId_0{enum + 1}", int(row[3]))
+        core.set_value(f"dataMmScore_checkbox_addIsInUtage_0{enum + 1}", hlp.ValueToBoolReversed(row[4]))
+
+        if enum == 0:
+            core.set_value(f"dataMmScore_input_addBaseSafename", row[5][4:-3])
+
+def DefaultDataMmScoreFields():
+    for i in range(1, 7, 1):
+        core.set_value(f"dataMmScore_input_addScoreId_0{i}", 0)
+        core.set_value(f"dataMmScore_input_addDifficulty_0{i}", 0.0)
+        core.set_value(f"dataMmScore_input_addDesignerId_0{i}", 0)
+        core.set_value(f"dataMmScore_checkbox_addIsInUtage_0{i}", False)
+    core.set_value("dataMmScore_input_addBaseSafename", "")

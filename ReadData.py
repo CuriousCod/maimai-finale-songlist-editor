@@ -43,6 +43,28 @@ def ReadMmScore(conn, path):
         dba.InsertLineToScore(conn, hlp.SplitMusicOrScoreLine(line))
 
 
+# Grabs all lines with the track id
+def ReadMmScoreLinesWithTrackId(fileFullname, trackId):
+    trackId = hlp.AffixZeroesToString(trackId, 3)
+
+    dataLines = []
+    rows = []
+
+    if os.path.isfile(fileFullname):
+        with open(fileFullname, "r", encoding="UTF16") as f:
+            for line in f.readlines():
+                if f"eScore_{trackId}" in line:
+                    dataLines.append(line.replace("\n", ""))
+    else:
+        print("File not found")
+        return
+
+    for line in dataLines:
+        rows.append(hlp.SplitMusicOrScoreLine(line))
+
+    return rows
+
+
 # def ReadMmScoreLine(fileFullname, trackId):
 #     dataLines = []
 #
@@ -151,9 +173,17 @@ def ReadSoundBgm(conn, path):
 
     with open(path + r"/SoundBGM.txt", "r", encoding="UTF8") as f:
         for line in f.readlines():
-            if not line.startswith("TUTORIAL") and not line.startswith("OMAKASE") and line != "\n":
+            # if not line.startswith("TUTORIAL") and not line.startswith("OMAKASE") and line != "\n":
+            if line != "\n":
                 dataLines.append(line.replace("\n", ""))
 
     for line in dataLines:
-        splitDataLine = line.split(",")
+        # SoundBGM has special bgm tracks on the top of the file that contains an extra comma at the end of the line
+        # Also there's an extra space after the first comma <_<
+        if line.startswith("TUTORIAL") or line.startswith("OMAKASE"):
+            line = line[:-1]
+            splitDataLine = line.split(", ")
+        else:
+            splitDataLine = line.split(",")
+
         dba.InsertLineToSoundBgm(conn, splitDataLine)
