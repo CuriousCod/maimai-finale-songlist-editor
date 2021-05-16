@@ -8,7 +8,6 @@ def SplitMusicOrScoreLine(line):
 
     return tuple(splitDataLine)
 
-
 def SetSpacing(data, maxmimumSpace):
     data = str(data)
     data += ", "
@@ -32,6 +31,7 @@ def AffixZeroesToString(text, requiredLength):
         return text
     else:
         return text
+
 
 def BoolToValue(value):
     if value:

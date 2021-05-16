@@ -300,21 +300,6 @@ class GUI:
                            items=["maimai Murasaki", "maimai Green"], default_value="maimai Murasaki")
             core.add_button("import_button_importTrackId", label="Import data", callback=self.ImportData)
 
-        # with simple.window("Browse Db"):
-        #     core.add_text("Browse current data")
-        #     core.add_button("browse_button_displayMmMusic", label="mmMusic", callback=self.DisplayTable,
-        #                     callback_data="mmMusic")
-        #     core.add_button("browse_button_displayMmScore", label="mmScore", callback=self.DisplayTable,
-        #                     callback_data="mmScore")
-        #     core.add_button("browse_button_displayArtist", label="Artist", callback=self.DisplayTable,
-        #                     callback_data="artist")
-        #     core.add_button("browse_button_displayTrack", label="Track", callback=self.DisplayTable,
-        #                     callback_data="track")
-        #     core.add_button("browse_button_displayDesigner", label="Designer", callback=self.DisplayTable,
-        #                     callback_data="designer")
-        #     core.add_button("browse_button_displaySoundBgm", label="Sound BGM", callback=self.DisplayTable,
-        #                     callback_data="soundBgm")
-
         with simple.window("window_editMaimaiData", label="Edit maimai FiNALE data"):
             with simple.tab_bar("Data Types"):
                 with simple.tab("Artist"):
@@ -359,7 +344,7 @@ class GUI:
                     core.add_input_int("dataMmMusic_input_addVersion", label="Version", max_value=99999, min_value=0,
                                        step_fast=1000, default_value=10000)
                     # subcate -> 30
-                    core.add_input_float("dataMmMusic_input_addBpm", label="BPM", max_value=999.99, format="%.2f",
+                    core.add_input_float("dataMmMusic_input_addBpm", label="BPM", max_value=999.999, format="%.3f",
                                          min_value=0, step=1.0, step_fast=10.0)
                     core.add_input_int("dataMmMusic_input_addSortId", label="Sort Id", max_value=999999, min_value=0,
                                        step=10, step_fast=1000, default_value=300000)
@@ -381,7 +366,7 @@ class GUI:
                     # special_pv -> 0
                     # challenge_track -> 0
                     # bonus -> 0
-                    core.add_combo("dataMmMusic_combo_genreId", label="Genre",
+                    core.add_combo("dataMmMusic_combo_addGenreId", label="Genre",
                                    items=["Pops & Anime", "niconico & Vocaloid", "Touhou Project", "Sega",
                                           "Game & Variety", "Original & Joypolis"], default_value="Pops & Anime")
                     core.add_input_int("dataMmMusic_input_addTitleId", label="Title Id", max_value=9999, min_value=0,
@@ -397,18 +382,48 @@ class GUI:
                                     callback=self.DisplayTable, callback_data="mmMusic")
                     core.add_button("dataMmMusic_button_addTrackToDb", label="Add track to database",
                                     callback=self.InsertDataToDb, callback_data="InsertMmMusic")
+
+                    core.add_text("dataMmMusic_hidden_subcate", show=False, default_value="30")
+                    core.add_text("dataMmMusic_hidden_dress", show=False, default_value="0")
+                    core.add_text("dataMmMusic_hidden_darkness", show=False, default_value="0")
+                    core.add_text("dataMmMusic_hidden_mile", show=False, default_value="0")
+
+                    core.add_text("dataMmMusic_hidden_event", show=False, default_value="0")
+                    core.add_text("dataMmMusic_hidden_rec", show=False, default_value="1")
+                    core.add_text("dataMmMusic_hidden_songDuration", show=False, default_value="0")
+                    core.add_text("dataMmMusic_hidden_offRanking", show=False, default_value="0")
+
+                    core.add_text("dataMmMusic_hidden_adDef", show=False, default_value="0")
+                    core.add_text("dataMmMusic_hidden_specialPv", show=False, default_value="0")
+                    core.add_text("dataMmMusic_hidden_challengeTrack", show=False, default_value="0")
+                    core.add_text("dataMmMusic_hidden_bonus", show=False, default_value="0")
+
                 with simple.tab("mmScore"):
-                    core.add_input_int("dataMmScore_input_addTrackId", label="Track ID", max_value=99999, min_value=0,
-                                       step_fast=100, default_value=800, callback=self.GetDataFromDb,
+                    core.add_input_int("dataMmScore_input_addTrackId", label="Track ID", max_value=999, min_value=0,
+                                       step_fast=100, default_value=0, callback=self.GetDataFromDb,
                                        callback_data="GetMmScore")
-                    core.add_input_float("dataMmScore_input_addDifficulty", label="Difficulty", max_value=99.9,
-                                         format="%.1f", min_value=0, step=0.1, step_fast=1.0)
-                    core.add_input_int("dataMmScore_input_addDesignerId", label="Score Designer Id", max_value=99,
-                                       min_value=0, step_fast=10)
-                    core.add_checkbox("dataMmScore_checkbox_addIsInUtage", label="In Utage mode")
-                    core.add_input_text("dataMmScore_input_addSafename", label="Score Filename")
+
+                    core.add_text("Score Id")
+                    core.add_same_line(spacing=60)
+                    core.add_text("Difficulty")
+                    core.add_same_line(spacing=52)
+                    core.add_text("Score Designer Id")
+
+                    for i in range(1, 7, 1):
+
+                        core.add_input_int(f"dataMmScore_input_addScoreId_0{i}", label="", min_value=0, max_value=99, step_fast=10, width=100, default_value=0)
+                        core.add_same_line()
+                        core.add_input_float(f"dataMmScore_input_addDifficulty_0{i}", label="", max_value=99.9,
+                                             format="%.1f", min_value=0, step=0.1, step_fast=1.0, width=100)
+                        core.add_same_line()
+                        core.add_input_int(f"dataMmScore_input_addDesignerId_0{i}", label="", max_value=99,
+                                           min_value=0, step_fast=10, width=100)
+                        core.add_same_line()
+                        core.add_checkbox(f"dataMmScore_checkbox_addIsInUtage_0{i}", label="In Utage")
+
+                    core.add_input_text("dataMmScore_input_addBaseSafename", label="Score Basename")
                     core.add_button("dataMmScore_button_addScoreToDb", label="Add score to database",
-                                    callback=self.InsertDataToDb, callback_data="")
+                                    callback=self.InsertDataToDb, callback_data="InsertMmScore")
                     core.add_same_line()
                     core.add_button("dataMmScore_button_showMmScoreTable", label="Show score table",
                                     callback=self.DisplayTable, callback_data="mmScore")
@@ -448,7 +463,7 @@ class GUI:
             core.add_table("table_mmScore", columns, height=0, width=0,
                            callback=lambda: [self.SelectTableRow("table_mmScore"),
                                              core.set_value("dataMmScore_input_addTrackId",
-                                                            int(self.GetFirstSelectedCellValue("table_mmScore"))),
+                                                            int(self.GetFirstSelectedCellValue("table_mmScore")[:-2])),
                                              self.GetDataFromDb("", "GetMmScore")])
 
         with simple.window("window_textoutArtistDisplay", label="Artist Name Grid", show=False):
@@ -565,7 +580,7 @@ class GUI:
             name = f"eMusic_{hlp.AffixZeroesToString(trackId, 3)}"
             version = core.get_value("dataMmMusic_input_addVersion")
             subcate = "30"
-            bpm = core.get_value("dataMmMusic_input_addBpm")
+            bpm = f'{round(core.get_value("dataMmMusic_input_addBpm"), 3):g}'
             sortId = core.get_value("dataMmMusic_input_addSortId")
             dress = "0"
             darkness = "0"
@@ -573,8 +588,8 @@ class GUI:
             videoBool = hlp.BoolToValueReversed(core.get_value("dataMmMusic_checkbox_addHasVideo"))
             event = "0"
             rec = "1"
-            pvStart = core.get_value("dataMmMusic_input_addPvStart")
-            pvEnd = core.get_value("dataMmMusic_input_addPvEnd")
+            pvStart = f'{round(core.get_value("dataMmMusic_input_addPvStart"), 2):g}'
+            pvEnd = f'{round(core.get_value("dataMmMusic_input_addPvEnd"), 2):g}'
             songDuration = "0"
             offRanking = "0"
             adDef = "0"
@@ -582,12 +597,27 @@ class GUI:
             specialPv = "0"
             challengeTrack = "0"
             bonus = "0"
-            genreId = hlp.GenreTextToFinaleValue(core.get_value("dataMmMusic_input_addGenre"))
+            genreId = hlp.GenreTextToFinaleValue(core.get_value("dataMmMusic_combo_addGenreId"))
             titleId = hlp.AffixZeroesToString(core.get_value("dataMmMusic_input_addTitleId"), 4)
             artistId = hlp.AffixZeroesToString(core.get_value("dataMmMusic_input_addArtistId"), 4)
             sortIndexJp = core.get_value("dataMmMusic_input_addSortJpIndex")
             sortIndexEx = core.get_value("dataMmMusic_input_addSortExIndex")
             filename = core.get_value("dataMmMusic_input_addFilename").lower()
+
+            subcate = core.get_value("dataMmMusic_hidden_subcate")
+            dress = core.get_value("dataMmMusic_hidden_dress")
+            darkness = core.get_value("dataMmMusic_hidden_darkness")
+            mile = core.get_value("dataMmMusic_hidden_mile")
+
+            event = core.get_value("dataMmMusic_hidden_event")
+            rec = core.get_value("dataMmMusic_hidden_rec")
+            songDuration = core.get_value("dataMmMusic_hidden_songDuration")
+            offRanking = core.get_value("dataMmMusic_hidden_offRanking")
+
+            adDef = core.get_value("dataMmMusic_hidden_adDef")
+            specialPv = core.get_value("dataMmMusic_hidden_specialPv")
+            challengeTrack = core.get_value("dataMmMusic_hidden_challengeTrack")
+            bonus = core.get_value("dataMmMusic_hidden_bonus")
 
             data = [trackId, name, version, subcate, bpm, sortId, dress, darkness, mile, videoBool, event, rec
                 , pvStart, pvEnd, songDuration, offRanking, adDef, remaster, specialPv, challengeTrack, bonus, genreId,
@@ -608,24 +638,30 @@ class GUI:
             if trackId == "":
                 return
 
-            name = "eScore_"
-            lv = str(core.get_value("dataMmScore_input_addDifficulty"))
-            designerId = core.get_value("dataMmScore_input_addDesignerId")
-            utageMode = hlp.BoolToValueReversed(core.get_value("dataMmScore_checkbox_addIsInUtage"))
-            safename = core.get_value("dataMmScore_input_addSafename")
+            # Get all rows where score id is not 0
+            for i in range(1, 7, 1):
+                if core.get_value(f"dataMmScore_input_addScoreId_0{i}") != 0:
+                    scoreId = hlp.AffixZeroesToString(core.get_value(f"dataMmScore_input_addScoreId_0{i}"), 2)
+                    lv = f'{round(core.get_value(f"dataMmScore_input_addDifficulty_0{i}"), 1):g}' # :g Removes trailing zeroes
+                    designerId = core.get_value(f"dataMmScore_input_addDesignerId_0{i}")
+                    utageMode = hlp.BoolToValueReversed(core.get_value(f"dataMmScore_checkbox_addIsInUtage_0{i}"))
+                    baseSafename = core.get_value("dataMmScore_input_addBaseSafename")
 
-            name += safename
+                    name = f"eScore_{hlp.AffixZeroesToString(trackId, 3)}_{baseSafename}_{scoreId}"
+                    safename = f"{hlp.AffixZeroesToString(trackId, 3)}_{baseSafename}_{scoreId}"
 
-            data = [trackId, name, lv, designerId, utageMode, safename]
+                    trackAndScoreId = int(str(trackId) + scoreId)
 
-            if not (dba.InsertLineToScore(tempConn, data)):
-                if core.get_value("data_checkbox_replaceDbEntry"):
-                    dba.ReplaceLineInScore(tempConn, data)
-                    self.AppendLog("Entry replaced")
-                else:
-                    self.AppendLog("Entry already exists")
-            else:
-                self.AppendLog("Entry added")
+                    data = [trackAndScoreId, name, lv, designerId, utageMode, safename]
+
+                    if not (dba.InsertLineToScore(tempConn, data)):
+                        if core.get_value("data_checkbox_replaceDbEntry"):
+                            dba.ReplaceLineInScore(tempConn, data)
+                            self.AppendLog(f"Entry {scoreId} replaced")
+                        else:
+                            self.AppendLog(f"Entry {scoreId} already exists")
+                    else:
+                        self.AppendLog(f"Entry {scoreId} added")
 
         elif data == "InsertSoundBgm":
             title = core.get_value("dataSoundBgm_input_addTitle")
@@ -692,21 +728,28 @@ class GUI:
             else:
                 dg.DefaultDataMmMusicFields()
 
+        # Grabs all scores for the track id
         elif data == "GetMmScore":
             trackId = core.get_value("dataMmScore_input_addTrackId")
-            row = dba.SelectMmScoreById(tempConn, trackId)
+            rows = dba.SelectMmScoreById(tempConn, hlp.AffixZeroesToString(trackId, 3))
 
-            if len(row) > 0:
-                row = row[0]
-                core.set_value("dataMmScore_input_addDifficulty", float(row[2]))
-                core.set_value("dataMmScore_input_addDesignerId", int(row[3]))
-                core.set_value("dataMmScore_checkbox_addIsInUtage", hlp.ValueToBoolReversed(row[4]))
-                core.set_value("dataMmScore_input_addSafename", row[5])
-            else:
-                core.set_value("dataMmScore_input_addDifficulty", 0.0)
-                core.set_value("dataMmScore_input_addDesignerId", 0)
-                core.set_value("dataMmScore_checkbox_addIsInUtage", False)
-                core.set_value("dataMmScore_input_addSafename", "")
+            for i in range(1, 7, 1):
+                core.set_value(f"dataMmScore_input_addScoreId_0{i}", 0)
+                core.set_value(f"dataMmScore_input_addDifficulty_0{i}", 0.0)
+                core.set_value(f"dataMmScore_input_addDesignerId_0{i}", 0)
+                core.set_value(f"dataMmScore_checkbox_addIsInUtage_0{i}", False)
+
+            core.set_value("dataMmScore_input_addBaseSafename", "")
+
+            for enum, row in enumerate(rows):
+                core.set_value(f"dataMmScore_input_addScoreId_0{enum + 1}", enum + 1)
+                core.set_value(f"dataMmScore_input_addDifficulty_0{enum + 1}", float(row[2]))
+                core.set_value(f"dataMmScore_input_addDesignerId_0{enum + 1}", int(row[3]))
+                core.set_value(f"dataMmScore_checkbox_addIsInUtage_0{enum + 1}", hlp.ValueToBoolReversed(row[4]))
+
+                if enum == 0:
+                    core.set_value(f"dataMmScore_input_addBaseSafename", row[5][4:-3])
+
         elif data == "GetSoundBgm":
             trackId = core.get_value("dataSoundBgm_input_addTrackId")
             row = dba.SelectSoundBgmById(tempConn, trackId)

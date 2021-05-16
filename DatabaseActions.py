@@ -169,12 +169,12 @@ def SelectMmScore(conn):
 
     return rows
 
-
+# Grab id from safename as track_id contains track id + score id combined
 def SelectMmScoreById(conn, track_id):
-    select = """SELECT track_id, name, lv, designer_id, utage_mode, safename FROM mm_score WHERE track_id = ? ORDER BY track_id"""
+    select = """SELECT track_id, name, lv, designer_id, utage_mode, safename FROM mm_score WHERE safename LIKE ? ORDER BY track_id"""
 
     cur = conn.cursor()
-    cur.execute(select, (track_id,))
+    cur.execute(select, (f"{track_id}%",))
 
     rows = cur.fetchall()
 
