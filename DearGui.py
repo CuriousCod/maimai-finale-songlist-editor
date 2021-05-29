@@ -86,3 +86,22 @@ def DefaultDataMmScoreFields():
         core.set_value(f"dataMmScore_input_addDesignerId_0{i}", 0)
         core.set_value(f"dataMmScore_checkbox_addIsInUtage_0{i}", False)
     core.set_value("dataMmScore_input_addBaseSafename", "")
+
+
+def GetMaimaiFilesFromInput(version):
+    files = {"mmMusic": core.get_value(f"files{version}_input_mmMusic"),
+             "mmScore": core.get_value(f"files{version}_input_mmScore"),
+             "mmTextoutEx": core.get_value(f"files{version}_input_mmTextoutEx"),
+             "mmTextoutJp": core.get_value(f"files{version}_input_mmTextoutJp"),
+             "soundBgm": core.get_value(f"files{version}_input_soundBgm")}
+
+    return files
+
+
+def SetMaimaiFilesFromConfig(version, files):
+    core.set_value(f"files{version}_input_mmMusic", files[0])
+    core.set_value(f"files{version}_input_mmScore", files[1])
+    core.set_value(f"files{version}_input_mmTextoutEx", files[2])
+    core.set_value(f"files{version}_input_mmTextoutJp", files[3])
+    core.set_value(f"files{version}_input_soundBgm", files[4])
+

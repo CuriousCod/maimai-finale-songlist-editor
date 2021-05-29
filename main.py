@@ -105,11 +105,14 @@ def EncryptFilesInOutput():
 
 def InitConfig():
     conf = configparser.ConfigParser()
+    supportedVersions = ["Finale, Murasaki"]
 
     if not os.path.isfile(os.getcwd() + "\\config.ini"):
         with open(os.getcwd() + "\\config.ini", "w") as f:
             conf["Database"] = {}
             conf["Database"]["Name"] = f"{os.getcwd()}/database/maimai.db"
+            conf["FilesFinale"] = {}
+            conf["FilesMurasaki"] = {}
             conf.write(f)
     else:
         conf.read(os.getcwd() + "\\config.ini")
@@ -118,6 +121,16 @@ def InitConfig():
                 conf["Database"] = {}
                 conf["Database"]["Name"] = f"{os.getcwd()}/database/maimai.db"
                 conf.write(f)
+        for version in supportedVersions:
+            if not conf.has_section(f"Files{version}"):
+                with open(os.getcwd() + "\\config.ini", "a") as f:
+                    conf[f"Files{version}"] = {}
+                    conf[f"Files{version}"]["mmMusic"] = ""
+                    conf[f"Files{version}"]["mmScore"] = ""
+                    conf[f"Files{version}"]["mmTextoutEx"] = ""
+                    conf[f"Files{version}"]["mmTextoutJp"] = ""
+                    conf[f"Files{version}"]["soundBgm"] = ""
+                    conf.write(f)
 
     return os.getcwd() + "\\config.ini"
 
@@ -781,6 +794,7 @@ class GUI:
     def OnExit(self):
         self.save_layout(self.GetCurrentWindowNames())
 
+    # TODO Rename
     def save_layout(self, windows):
         with open(os.getcwd() + "\\config.ini", "r+") as f:
             self.config["Layout"] = {}
@@ -791,6 +805,14 @@ class GUI:
                     window + "_size"] = f"{str(simple.get_drawing_size(window)[0])}, {str(simple.get_drawing_size(window)[1])}"
             self.config["Layout"][
                 "MainWindow"] = f"{str(core.get_main_window_size()[0])}, {str(core.get_main_window_size()[1])}"
+
+            supportedVersions = ["Finale", "Murasaki"]
+
+            for version in supportedVersions:
+                for name, file in dg.GetMaimaiFilesFromInput(version).items():
+                    if file:
+                        self.config[f"files{version}"][name] = file
+
             self.config.write(f)
 
     def load_layout(self, windows):
@@ -805,6 +827,19 @@ class GUI:
                     print(f"KeyError: {e}")
             size = self.config["Layout"]["MainWindow"].split(", ")
             core.set_main_window_size(int(size[0]), int(size[1]))
+
+        supportedVersions = ["Finale", "Murasaki"]
+
+        for version in supportedVersions:
+            files = []
+
+            files.append(self.config[f"files{version}"]["mmMusic"])
+            files.append(self.config[f"files{version}"]["mmScore"])
+            files.append(self.config[f"files{version}"]["mmTextoutEx"])
+            files.append(self.config[f"files{version}"]["mmTextoutJp"])
+            files.append(self.config[f"files{version}"]["soundBgm"])
+
+            dg.SetMaimaiFilesFromConfig(version, files)
 
     def GetCurrentWindowNames(self):
         windows = core.get_windows()
