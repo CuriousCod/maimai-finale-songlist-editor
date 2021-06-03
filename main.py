@@ -105,32 +105,29 @@ def EncryptFilesInOutput():
 
 def InitConfig():
     conf = configparser.ConfigParser()
-    supportedVersions = ["Finale, Murasaki"]
+    supportedVersions = ["Finale", "Murasaki"]
 
     if not os.path.isfile(os.getcwd() + "\\config.ini"):
-        with open(os.getcwd() + "\\config.ini", "w") as f:
-            conf["Database"] = {}
-            conf["Database"]["Name"] = f"{os.getcwd()}/database/maimai.db"
-            conf["FilesFinale"] = {}
-            conf["FilesMurasaki"] = {}
-            conf.write(f)
+        conf.add_section("Database")
+        conf["Database"]["Name"] = f"{os.getcwd()}/database/maimai.db"
+        conf.add_section("FilesFinale")
+        conf.add_section("FilesMurasaki")
     else:
         conf.read(os.getcwd() + "\\config.ini")
         if not conf.has_section("Database"):
-            with open(os.getcwd() + "\\config.ini", "a") as f:
-                conf["Database"] = {}
-                conf["Database"]["Name"] = f"{os.getcwd()}/database/maimai.db"
-                conf.write(f)
+            conf.add_section("Database")
+            conf["Database"]["Name"] = f"{os.getcwd()}/database/maimai.db"
         for version in supportedVersions:
             if not conf.has_section(f"Files{version}"):
-                with open(os.getcwd() + "\\config.ini", "a") as f:
-                    conf[f"Files{version}"] = {}
-                    conf[f"Files{version}"]["mmMusic"] = ""
-                    conf[f"Files{version}"]["mmScore"] = ""
-                    conf[f"Files{version}"]["mmTextoutEx"] = ""
-                    conf[f"Files{version}"]["mmTextoutJp"] = ""
-                    conf[f"Files{version}"]["soundBgm"] = ""
-                    conf.write(f)
+                conf.add_section(f"Files{version}")
+                conf[f"Files{version}"]["mmMusic"] = ""
+                conf[f"Files{version}"]["mmScore"] = ""
+                conf[f"Files{version}"]["mmTextoutEx"] = ""
+                conf[f"Files{version}"]["mmTextoutJp"] = ""
+                conf[f"Files{version}"]["soundBgm"] = ""
+
+    with open(os.getcwd() + "\\config.ini", "w") as f:
+        conf.write(f)
 
     return os.getcwd() + "\\config.ini"
 
@@ -797,7 +794,8 @@ class GUI:
     # TODO Rename
     def save_layout(self, windows):
         with open(os.getcwd() + "\\config.ini", "r+") as f:
-            self.config["Layout"] = {}
+            if not self.config.has_section("Layout"):
+                self.config["Layout"] = {}
             for window in windows:
                 self.config["Layout"][
                     window + "_pos"] = f"{str(simple.get_window_pos(window)[0])}, {str(simple.get_window_pos(window)[1])}"
@@ -811,7 +809,7 @@ class GUI:
             for version in supportedVersions:
                 for name, file in dg.GetMaimaiFilesFromInput(version).items():
                     if file:
-                        self.config[f"files{version}"][name] = file
+                        self.config[f"Files{version}"][name] = file
 
             self.config.write(f)
 
@@ -833,11 +831,11 @@ class GUI:
         for version in supportedVersions:
             files = []
 
-            files.append(self.config[f"files{version}"]["mmMusic"])
-            files.append(self.config[f"files{version}"]["mmScore"])
-            files.append(self.config[f"files{version}"]["mmTextoutEx"])
-            files.append(self.config[f"files{version}"]["mmTextoutJp"])
-            files.append(self.config[f"files{version}"]["soundBgm"])
+            files.append(self.config[f"Files{version}"]["mmMusic"])
+            files.append(self.config[f"Files{version}"]["mmScore"])
+            files.append(self.config[f"Files{version}"]["mmTextoutEx"])
+            files.append(self.config[f"Files{version}"]["mmTextoutJp"])
+            files.append(self.config[f"Files{version}"]["soundBgm"])
 
             dg.SetMaimaiFilesFromConfig(version, files)
 
