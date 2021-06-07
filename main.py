@@ -441,7 +441,7 @@ class GUI:
                                        step_fast=100, callback=self.GetDataFromDb, callback_data="GetSoundBgm")
                     core.add_input_text("dataSoundBgm_input_addTitle", label="Track Filename")
                     core.add_button("dataSoundBgm_button_addSoundBgmToDB", label="Add sound bgm to database",
-                                    callback=self.InsertDataToDb, callback_data="")
+                                    callback=self.InsertDataToDb, callback_data="InsertSoundBgm")
                     core.add_same_line()
                     core.add_button("dataMmScore_button_showSoundBgmTable", label="Show sound table",
                                     callback=self.DisplayTable, callback_data="soundBgm")
