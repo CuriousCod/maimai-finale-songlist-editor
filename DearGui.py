@@ -2,6 +2,7 @@ from dearpygui import core, simple
 import Helpers as hlp
 
 
+
 def UpdateDataMmMusicFields(row):
     if len(row) == 27:
         core.set_value("dataMmMusic_input_addVersion", int(row[2]))
@@ -86,6 +87,12 @@ def DefaultDataMmScoreFields():
         core.set_value(f"dataMmScore_input_addDesignerId_0{i}", 0)
         core.set_value(f"dataMmScore_checkbox_addIsInUtage_0{i}", False)
     core.set_value("dataMmScore_input_addBaseSafename", "")
+
+
+def UpdateDataTrackNameFields(row):
+    core.set_value("dataTrack_input_addTrackId", row[0])
+    core.set_value("dataTrack_input_addTrackEx", row[1])
+    core.set_value("dataTrack_input_addTrackJp", row[2])
 
 
 def GetMaimaiFilesFromInput(version):

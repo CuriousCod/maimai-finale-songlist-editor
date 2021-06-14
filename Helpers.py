@@ -1,4 +1,16 @@
 
+# Common names used around in the application
+class DataContainers:
+    mmMusic = "mmMusic"
+    mmScore = "mmScore"
+    mmTextoutEx = "mmTextoutEx"
+    mmTextoutJp = "mmTextoutJp"
+    soundBgm = "soundBgm"
+    designer = "designer"
+    track = "track"
+    artist = "artist"
+
+
 def SplitMusicOrScoreLine(line):
     # Remove the mess from the beginning and the end of the line
     line = line[line.find(" ") + 1:line.rfind("\"") + 1]
@@ -59,7 +71,7 @@ def ValueToBoolReversed(value):
 
 
 def GenreTextToFinaleValue(text):
-    genres = {"Pops & Anime": "4", "niconico & Vocaloid": "5", "Touhou Project": "6", "Sega": "7", "Game & Variety": "8", "Original & Joypolis": "9"}
+    genres = {"Pops & Anime": "4", "niconico & Vocaloid": "5", "Touhou Project": "6", "Sega": "7", "Game & Variety": "8", "Original & Joypolis": "9", "None": "0"}
 
     for genre in genres.keys():
         if text == genre:
@@ -69,7 +81,7 @@ def GenreTextToFinaleValue(text):
 
 
 def GenreValueToFinaleText(value):
-    genres = {"Pops & Anime": "4", "niconico & Vocaloid": "5", "Touhou Project": "6", "Sega": "7", "Game & Variety": "8", "Original & Joypolis": "9"}
+    genres = {"Pops & Anime": "4", "niconico & Vocaloid": "5", "Touhou Project": "6", "Sega": "7", "Game & Variety": "8", "Original & Joypolis": "9", "None": "0"}
 
     for genre, id in genres.items():
         if value == id:

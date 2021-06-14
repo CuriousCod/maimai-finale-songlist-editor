@@ -65,6 +65,35 @@ def ReadMmScoreLinesWithTrackId(fileFullname, trackId):
     return rows
 
 
+def ReadMmTextoutLineWithId(fileFullname, trackId, type):
+    types = hlp.DataContainers()
+    trackId = hlp.AffixZeroesToString(trackId, 4)
+
+    if os.path.isfile(fileFullname):
+        with open(fileFullname, "r", encoding="UTF16") as f:
+            for line in f.readlines():
+                if type == types.artist:
+                    if f"RST_MUSICARTIST_{trackId}" in line:
+                        line = line.replace("\n", "")
+                        line = line[line.rfind("L\"") + 2:line.rfind("\" )")]
+                        return line
+                elif type == types.track:
+                    if f"RST_MUSICTITLE_{trackId}" in line:
+                        line = line.replace("\n", "")
+                        line = line[line.rfind("L\"") + 2:line.rfind("\" )")]
+                        return line
+                elif type == types.designer:
+                    if f"RST_SCORECREATOR_{trackId}" in line:
+                        line = line.replace("\n", "")
+                        line = line[line.rfind("L\"") + 2:line.rfind("\" )")]
+                        return line
+                else:
+                    return
+    else:
+        print("File not found")
+        return
+
+
 # def ReadMmScoreLine(fileFullname, trackId):
 #     dataLines = []
 #

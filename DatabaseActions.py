@@ -287,3 +287,17 @@ def SelectTitleIdAndArtistIdFromMmMusic(conn, trackId):
     rows = cur.fetchall()
 
     return rows
+
+
+# Filters -------------------------------------------------------------------------------------------------------------
+def SelectMmMusicByLikeFilename(conn, keyword):
+    select ="""SELECT track_id, name, ver, subcate, bpm, sort_id, dress, darkness, mile, vl, event, 
+       rec, pvstart, pvend, song_duration, off_ranking, ad_def, remaster, special_pv, challenge_track, bonus, genre_id, 
+       title, artist, sort_jp_index, sort_ex_index, filename FROM mm_music WHERE filename LIKE ?"""
+
+    cur = conn.cursor()
+    cur.execute(select, (f"%{keyword}%",))
+
+    rows = cur.fetchall()
+
+    return rows
