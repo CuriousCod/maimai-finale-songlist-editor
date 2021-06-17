@@ -67,7 +67,7 @@ def CreateSoundBgmFromTemplate(bgmLines):
                 indexes.append(value)
 
         # Remove special bgms from the list, so they aren't written again
-        sorted(indexes, reverse=True)
+        indexes = sorted(indexes, reverse=True)
         print(indexes)
         for indx in indexes:
             bgmLines.pop(indx)

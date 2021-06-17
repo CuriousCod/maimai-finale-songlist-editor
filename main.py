@@ -23,6 +23,8 @@ from dearpygui import core, simple
 # TODO Import all required data from other maimai versions based on mmusic id
 # TODO Support for mmMusic event field
 # TODO Dynamic row adding for mmScore entries
+# TODO Load files into db should always create a new db file
+# TODO Make sort id easier to understand/automatic (01 -> a, 02 -> b, etc)
 
 
 def CreateConnection(db_file):
