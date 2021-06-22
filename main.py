@@ -17,7 +17,6 @@ import DatabaseActions as dba
 import Helpers as hlp
 from dearpygui import core, simple
 
-
 # TODO Display all ids without data
 # TODO Function to check all data connections for an id
 # TODO Import all required data from other maimai versions based on mmusic id
@@ -156,6 +155,7 @@ class GUI:
         self.db = self.config["Database"]["Name"]
         conn = CreateConnection(self.db)
         InitDb(conn)
+        conn.close()
 
 
     def DisplayTable(self, sender, data):
