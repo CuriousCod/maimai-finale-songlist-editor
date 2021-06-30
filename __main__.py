@@ -289,100 +289,100 @@ class GUI:
         with dpg.window(label="Select maimai files", y_pos=400) as ui_window_selectMaimaiFiles:
             with dpg.tab_bar(label="maimai Versions"):
                 with dpg.tab(label="FiNALE"):
-                    ui_filesFinale_button_selectMaimaiFolder = dpg.add_button( label="Select maimai FiNALE folder",
+                    self.ui_filesFinale_button_selectMaimaiFolder = dpg.add_button( label="Select maimai FiNALE folder",
                                     callback=lambda: self.SelectMaimaiFolder("Finale"))
-                    ui_filesFinale_input_mmMusic = dpg.add_input_text(label="mmMusic.bin")
-                    ui_filesFinale_input_mmScore = dpg.add_input_text(label="mmScore.bin")
-                    ui_filesFinale_input_mmTextoutEx = dpg.add_input_text(label="mmTextoutEx.bin")
-                    ui_filesFinale_input_mmTextoutJp = dpg.add_input_text(label="mmTextoutJp.bin")
-                    ui_filesFinale_input_soundBgm = dpg.add_input_text(label="soundBGM.txt")
-                    ui_filesFinale_button_decryptFiles = dpg.add_button(label="Decrypt Files",
+                    self.ui_filesFinale_input_mmMusic = dpg.add_input_text(label="mmMusic.bin")
+                    self.ui_filesFinale_input_mmScore = dpg.add_input_text(label="mmScore.bin")
+                    self.ui_filesFinale_input_mmTextoutEx = dpg.add_input_text(label="mmTextoutEx.bin")
+                    self.ui_filesFinale_input_mmTextoutJp = dpg.add_input_text(label="mmTextoutJp.bin")
+                    self.ui_filesFinale_input_soundBgm = dpg.add_input_text(label="soundBGM.txt")
+                    self.ui_filesFinale_button_decryptFiles = dpg.add_button(label="Decrypt Files",
                                     callback=DecryptFilesInInput)
-                    ui_filesFinale_button_loadFilesIntoDatabase = dpg.add_button(label="Load Files Into Database",
+                    self.ui_filesFinale_button_loadFilesIntoDatabase = dpg.add_button(label="Load Files Into Database",
                                     callback=lambda: LoadFilesIntoDb(f"{os.getcwd()}/input", self.db))
                 with dpg.tab(label="Murasaki"):
-                    ui_filesMurasaki_button_selectMaimaiFolder = dpg.add_button(label="Select maimai Murasaki folder",
+                    self.ui_filesMurasaki_button_selectMaimaiFolder = dpg.add_button(label="Select maimai Murasaki folder",
                                     callback=lambda: self.SelectMaimaiFolder("Murasaki"))
-                    ui_filesMurasaki_input_mmMusic = dpg.add_input_text(label="mmMusic.tbl")
-                    ui_filesMurasaki_input_mmScore = dpg.add_input_text(label="mmSdpg.tbl")
-                    ui_filesMurasaki_input_mmTextoutEx = dpg.add_input_text(label="mmTextoutEx.tbl")
-                    ui_filesMurasaki_input_mmTextoutJp = dpg.add_input_text(label="mmTextoutJp.tbl")
-                    ui_filesMurasaki_input_soundBgm = dpg.add_input_text(label="soundBGM.txt")
+                    self.ui_filesMurasaki_input_mmMusic = dpg.add_input_text(label="mmMusic.tbl")
+                    self.ui_filesMurasaki_input_mmScore = dpg.add_input_text(label="mmSdpg.tbl")
+                    self.ui_filesMurasaki_input_mmTextoutEx = dpg.add_input_text(label="mmTextoutEx.tbl")
+                    self.ui_filesMurasaki_input_mmTextoutJp = dpg.add_input_text(label="mmTextoutJp.tbl")
+                    self.ui_filesMurasaki_input_soundBgm = dpg.add_input_text(label="soundBGM.txt")
                 with dpg.tab(label="Green"):
                     pass
-        with dpg.window(label="Import maimai data") as ui_window_importMaimaiData:
-            ui_import_input_importTrackId = dpg.add_input_int(min_value=0, step_fast=10, max_value=99999,
+        with dpg.window(label="Import maimai data") as self.ui_window_importMaimaiData:
+            self.ui_import_input_importTrackId = dpg.add_input_int(min_value=0, step_fast=10, max_value=99999,
                                label="Track Id", default_value=0)
-            ui_import_combo_importVersion = dpg.add_combo(label="Import from version",
+            self.ui_import_combo_importVersion = dpg.add_combo(label="Import from version",
                            items=["maimai Murasaki", "maimai Green"], default_value="maimai Murasaki")
-            ui_import_button_importTrackId = dpg.add_button(label="Import data", callback=self.ImportData)
+            self.ui_import_button_importTrackId = dpg.add_button(label="Import data", callback=self.ImportData)
 
-        with dpg.window(label="Edit maimai FiNALE data") as ui_window_editMaimaiData:
+        with dpg.window(label="Edit maimai FiNALE data") as self.ui_window_editMaimaiData:
             with dpg.tab_bar(label="Data Types"):
                 # TODO add tips
                 with dpg.tab(label="mmMusic"):
-                    ui_dataMmMusic_input_addTrackId = dpg.add_input_int(label="Track ID", max_value=999, min_value=0,
+                    self.ui_dataMmMusic_input_addTrackId = dpg.add_input_int(label="Track ID", max_value=999, min_value=0,
                                        step_fast=100, callback=self.GetDataFromDb, callback_data=data.mmMusic)
                     # name
-                    ui_dataMmMusic_input_addVersion = dpg.add_input_int(label="Version", max_value=99999, min_value=0,
+                    self.ui_dataMmMusic_input_addVersion = dpg.add_input_int(label="Version", max_value=99999, min_value=0,
                                        step_fast=1000, default_value=10000)
                     # subcate -> 30
-                    ui_dataMmMusic_input_addBpm = dpg.add_input_float(label="BPM", max_value=999.999, format="%.3f",
+                    self.ui_dataMmMusic_input_addBpm = dpg.add_input_float(label="BPM", max_value=999.999, format="%.3f",
                                          min_value=0, step=1.0, step_fast=10.0)
-                    ui_dataMmMusic_input_addSortId = dpg.add_input_int(label="Sort Id", max_value=999999, min_value=0,
+                    self.ui_dataMmMusic_input_addSortId = dpg.add_input_int(label="Sort Id", max_value=999999, min_value=0,
                                        step=10, step_fast=1000, default_value=300000)
                     # dress -> 0
                     # darkness -> 0
                     # mile -> 0
-                    ui_dataMmMusic_checkbox_addHasVideo = dpg.add_checkbox(label="Track has video file")
+                    self.ui_dataMmMusic_checkbox_addHasVideo = dpg.add_checkbox(label="Track has video file")
                     # event -> 0
                     # rec -> 1
-                    ui_dataMmMusic_input_addPvStart = dpg.add_input_float(label="PV Start", max_value=999.99,
+                    self.ui_dataMmMusic_input_addPvStart = dpg.add_input_float(label="PV Start", max_value=999.99,
                                          step_fast=10.0, step=1.0, format="%.2f", min_value=0.00)
-                    ui_dataMmMusic_input_addPvEnd = dpg.add_input_float(label="PV End", max_value=999.99, step_fast=10.0,
+                    self.ui_dataMmMusic_input_addPvEnd = dpg.add_input_float(label="PV End", max_value=999.99, step_fast=10.0,
                                          step=1.0, format="%.2f", min_value=0.00)
                     # song duration -> 0
                     # off_rank -> 0
                     # ad_def -> 0
-                    ui_dataMmMusic_input_addRemaster = dpg.add_input_int(label="Remaster", max_value=99999999,
+                    self.ui_dataMmMusic_input_addRemaster = dpg.add_input_int(label="Remaster", max_value=99999999,
                                        min_value=0, step=1, step_fast=10000000, default_value=99999999)
                     # special_pv -> 0
                     # challenge_track -> 0
                     # bonus -> 0
-                    ui_dataMmMusic_combo_addGenreId = dpg.add_combo(label="Genre",
+                    self.ui_dataMmMusic_combo_addGenreId = dpg.add_combo(label="Genre",
                                    items=["Pops & Anime", "niconico & Vocaloid", "Touhou Project", "Sega",
                                           "Game & Variety", "Original & Joypolis", "None"], default_value="Pops & Anime")
-                    ui_dataMmMusic_input_addTitleId = dpg.add_input_int(label="Title Id", max_value=9999, min_value=0,
+                    self.ui_dataMmMusic_input_addTitleId = dpg.add_input_int(label="Title Id", max_value=9999, min_value=0,
                                        step_fast=100)
-                    ui_dataMmMusic_input_addArtistId = dpg.add_input_int(label="Artist Id", max_value=9999, min_value=0,
+                    self.ui_dataMmMusic_input_addArtistId = dpg.add_input_int(label="Artist Id", max_value=9999, min_value=0,
                                        step_fast=100)
-                    ui_dataMmMusic_input_addSortJpIndex = dpg.add_input_int(label="Sort Index JP", max_value=999999,
+                    self.ui_dataMmMusic_input_addSortJpIndex = dpg.add_input_int(label="Sort Index JP", max_value=999999,
                                        min_value=0, step_fast=10000, step=1)
-                    ui_dataMmMusic_input_addSortExIndex = dpg.add_input_int(label="Sort Index EX", max_value=999999,
+                    self.ui_dataMmMusic_input_addSortExIndex = dpg.add_input_int(label="Sort Index EX", max_value=999999,
                                        min_value=0, step_fast=10000, step=1)
-                    ui_dataMmMusic_input_addFilename = dpg.add_input_text(label="Filename")
-                    ui_dataMmMusic_button_showMmMusicTable = dpg.add_button(label="Show music table",
+                    self.ui_dataMmMusic_input_addFilename = dpg.add_input_text(label="Filename")
+                    self.ui_dataMmMusic_button_showMmMusicTable = dpg.add_button(label="Show music table",
                                     callback=self.DisplayTable, callback_data=data.mmMusic)
-                    ui_dataMmMusic_button_addTrackToDb = dpg.add_button(label="Add track to database",
+                    self.ui_dataMmMusic_button_addTrackToDb = dpg.add_button(label="Add track to database",
                                     callback=self.InsertDataToDb, callback_data=data.mmMusic)
 
-                    dpg.add_text("dataMmMusic_hidden_subcate", show=False, default_value="30")
-                    dpg.add_text("dataMmMusic_hidden_dress", show=False, default_value="0")
-                    dpg.add_text("dataMmMusic_hidden_darkness", show=False, default_value="0")
-                    dpg.add_text("dataMmMusic_hidden_mile", show=False, default_value="0")
+                    self.ui_dataMmMusic_hidden_subcate = dpg.add_text(show=False, default_value="30")
+                    self.ui_dataMmMusic_hidden_dress = dpg.add_text(show=False, default_value="0")
+                    self.ui_dataMmMusic_hidden_darkness = dpg.add_text(show=False, default_value="0")
+                    self.ui_dataMmMusic_hidden_mile = dpg.add_text(show=False, default_value="0")
 
-                    dpg.add_text("dataMmMusic_hidden_event", show=False, default_value="0")
-                    dpg.add_text("dataMmMusic_hidden_rec", show=False, default_value="1")
-                    dpg.add_text("dataMmMusic_hidden_songDuration", show=False, default_value="0")
-                    dpg.add_text("dataMmMusic_hidden_offRanking", show=False, default_value="0")
+                    self.ui_dataMmMusic_hidden_event = dpg.add_text(show=False, default_value="0")
+                    self.ui_dataMmMusic_hidden_rec = dpg.add_text(show=False, default_value="1")
+                    self.ui_dataMmMusic_hidden_songDuration = dpg.add_text(show=False, default_value="0")
+                    self.ui_dataMmMusic_hidden_offRanking = dpg.add_text(show=False, default_value="0")
 
-                    dpg.add_text("dataMmMusic_hidden_adDef", show=False, default_value="0")
-                    dpg.add_text("dataMmMusic_hidden_specialPv", show=False, default_value="0")
-                    dpg.add_text("dataMmMusic_hidden_challengeTrack", show=False, default_value="0")
-                    dpg.add_text("dataMmMusic_hidden_bonus", show=False, default_value="0")
+                    self.ui_dataMmMusic_hidden_adDef = dpg.add_text(show=False, default_value="0")
+                    self.ui_dataMmMusic_hidden_specialPv = dpg.add_text(show=False, default_value="0")
+                    self.ui_dataMmMusic_hidden_challengeTrack = dpg.add_text(show=False, default_value="0")
+                    self.ui_dataMmMusic_hidden_bonus = dpg.add_text(show=False, default_value="0")
 
                 with dpg.tab(label="mmScore"):
-                    ui_dataMmScore_input_addTrackId = dpg.add_input_int(label="Track ID", max_value=999, min_value=0,
+                    self.ui_dataMmScore_input_addTrackId = dpg.add_input_int(label="Track ID", max_value=999, min_value=0,
                                        step_fast=100, default_value=0, callback=self.GetDataFromDb,
                                        callback_data=data.mmScore)
 
@@ -404,84 +404,84 @@ class GUI:
                         dpg.add_same_line()
                         dpg.add_checkbox(f"dataMmScore_checkbox_addIsInUtage_0{i}", label="In Utage")
 
-                    ui_dataMmScore_input_addBaseSafename = dpg.add_input_text(label="Score Basename")
-                    ui_dataMmScore_button_addScoreToDb = dpg.add_button(label="Add score to database",
+                    self.ui_dataMmScore_input_addBaseSafename = dpg.add_input_text(label="Score Basename")
+                    self.ui_dataMmScore_button_addScoreToDb = dpg.add_button(label="Add score to database",
                                     callback=self.InsertDataToDb, callback_data=data.mmScore)
                     dpg.add_same_line()
-                    ui_dataMmScore_button_showMmScoreTable = dpg.add_button(label="Show score table",
+                    self.ui_dataMmScore_button_showMmScoreTable = dpg.add_button(label="Show score table",
                                     callback=self.DisplayTable, callback_data=data.mmScore)
 
                 with dpg.tab(label="Sound BGM"):
-                    ui_dataSoundBgm_input_addTrackId = dpg.add_input_int(label="Track ID", max_value=999, min_value=0,
+                    self.ui_dataSoundBgm_input_addTrackId = dpg.add_input_int(label="Track ID", max_value=999, min_value=0,
                                        step_fast=100, callback=self.GetDataFromDb, callback_data=data.soundBgm)
-                    ui_dataSoundBgm_input_addTitle = dpg.add_input_text(label="Track Filename")
-                    ui_dataSoundBgm_button_addSoundBgmToDB = dpg.add_button(label="Add sound bgm to database",
+                    self.ui_dataSoundBgm_input_addTitle = dpg.add_input_text(label="Track Filename")
+                    self.ui_dataSoundBgm_button_addSoundBgmToDB = dpg.add_button(label="Add sound bgm to database",
                                     callback=self.InsertDataToDb, callback_data=data.soundBgm)
                     dpg.add_same_line()
-                    ui_dataMmScore_button_showSoundBgmTable = dpg.add_button(label="Show sound table",
+                    self.ui_dataMmScore_button_showSoundBgmTable = dpg.add_button(label="Show sound table",
                                     callback=self.DisplayTable, callback_data=data.soundBgm)
 
                 with dpg.tab(label="Artist"):
                     dpg.add_text("Artist")
-                    ui_dataArtist_input_addArtistId = dpg.add_input_int(label="Artist ID", max_value=9999, min_value=0,
+                    self.ui_dataArtist_input_addArtistId = dpg.add_input_int(label="Artist ID", max_value=9999, min_value=0,
                                        step_fast=100, callback=self.GetDataFromDb, callback_data=data.mmMusic)
-                    ui_dataArtist_input_addArtistEx = dpg.add_input_text(label="Ex Artist")
-                    ui_dataArtist_input_addArtistJp = dpg.add_input_text(label="Jp Artist")
-                    ui_dataArtist_button_addArtistToDb = dpg.add_button(label="Add artist to database",
+                    self.ui_dataArtist_input_addArtistEx = dpg.add_input_text(label="Ex Artist")
+                    self.ui_dataArtist_input_addArtistJp = dpg.add_input_text(label="Jp Artist")
+                    self.ui_dataArtist_button_addArtistToDb = dpg.add_button(label="Add artist to database",
                                     callback=self.InsertDataToDb, callback_data=data.artist)
                     dpg.add_same_line()
-                    ui_dataTrack_button_showArtistTable = dpg.add_button(label="Show track artist table",
+                    self.ui_dataTrack_button_showArtistTable = dpg.add_button(label="Show track artist table",
                                     callback=self.DisplayTable, callback_data=data.artist)
                 with dpg.tab(label="Track Name"):
                     dpg.add_text("Track Name")
-                    ui_dataTrack_input_addTrackId = dpg.add_input_int(label="Track ID", max_value=9999, min_value=0,
+                    self.ui_dataTrack_input_addTrackId = dpg.add_input_int(label="Track ID", max_value=9999, min_value=0,
                                        step_fast=100, callback=self.GetDataFromDb, callback_data=data.track)
-                    ui_dataTrack_input_addTrackEx = dpg.add_input_text(label="Ex Track")
-                    ui_dataTrack_input_addTrackJp = dpg.add_input_text(label="Jp Track")
-                    ui_dataTrack_button_addTrackNameToDb = dpg.add_button(label="Add track name to database",
+                    self.ui_dataTrack_input_addTrackEx = dpg.add_input_text(label="Ex Track")
+                    self.ui_dataTrack_input_addTrackJp = dpg.add_input_text(label="Jp Track")
+                    self.ui_dataTrack_button_addTrackNameToDb = dpg.add_button(label="Add track name to database",
                                     callback=self.InsertDataToDb, callback_data=data.track)
                     dpg.add_same_line()
-                    ui_dataTrack_button_showTrackNameTable = dpg.add_button(label="Show track name table",
+                    self.ui_dataTrack_button_showTrackNameTable = dpg.add_button(label="Show track name table",
                                     callback=self.DisplayTable, callback_data=data.track)
                 with dpg.tab(label="Designer Name"):
                     dpg.add_text("Designer Name")
-                    ui_dataDesigner_input_addDesignerId = dpg.add_input_int(label="Designer ID", max_value=99,
+                    self.ui_dataDesigner_input_addDesignerId = dpg.add_input_int(label="Designer ID", max_value=99,
                                        min_value=0, step_fast=10, callback=self.GetDataFromDb,
                                        callback_data=data.designer)
-                    ui_dataDesigner_input_addDesignerEx = dpg.add_input_text(label="Ex Designer")
-                    ui_dataDesigner_input_addDesignerJp = dpg.add_input_text(label="Jp Designer")
-                    ui_dataDesigner_button_addDesignerToDb = dpg.add_button(label="Add designer to database",
+                    self.ui_dataDesigner_input_addDesignerEx = dpg.add_input_text(label="Ex Designer")
+                    self.ui_dataDesigner_input_addDesignerJp = dpg.add_input_text(label="Jp Designer")
+                    self.ui_dataDesigner_button_addDesignerToDb = dpg.add_button(label="Add designer to database",
                                     callback=self.InsertDataToDb, callback_data=data.designer)
                     dpg.add_same_line()
-                    ui_dataDesigner_button_showDesignerTable = dpg.add_button(label="Show score designer table",
+                    self.ui_dataDesigner_button_showDesignerTable = dpg.add_button(label="Show score designer table",
                                     callback=self.DisplayTable, callback_data=data.designer)
 
-                ui_data_checkbox_replaceDbEntry = dpg.add_checkbox(label="Overwrite existing database entry")
+                self.ui_data_checkbox_replaceDbEntry = dpg.add_checkbox(label="Overwrite existing database entry")
 
-        with dpg.window(label="Generate maimai Files", x_pos=400) as ui_window_generateMaimaiFiles:
+        with dpg.window(label="Generate maimai Files", x_pos=400) as self.ui_window_generateMaimaiFiles:
             dpg.add_text("Generate data files for maimai FiNALE")
-            ui_generate_button_createFiles = dpg.add_button(label="Generate Files",
+            self.ui_generate_button_createFiles = dpg.add_button(label="Generate Files",
                             callback=self.GenerateAndEncryptFiles)
-            ui_generate_checkbox_encryptFiles = dpg.add_checkbox(label="Encrypt Files", default_value=True)
+            self.ui_generate_checkbox_encryptFiles = dpg.add_checkbox(label="Encrypt Files", default_value=True)
             dpg.add_spacing(count=4)
-            ui_generate_button_openOutputFolder = dpg.add_button(label="Open Output Folder",
+            self.ui_generate_button_openOutputFolder = dpg.add_button(label="Open Output Folder",
                             callback=lambda: os.startfile(f"{os.getcwd()}/output"))
 
-        with dpg.window(label="mmMusic Grid", show=False) as ui_window_mmMusicDisplay:
-            ui_table_mmMusic_input_filter = dpg.add_input_text(label="Filter", callback=lambda: self.FilterData(data.mmMusic))
+        with dpg.window(label="mmMusic Grid", show=False) as self.ui_window_mmMusicDisplay:
+            self.ui_table_mmMusic_input_filter = dpg.add_input_text(label="Filter", callback=lambda: self.FilterData(data.mmMusic))
             columns = ["track_id", "name", "ver", "subcate", "bpm", "sort_id", "dress", "darkness", "mile", "vl",
                        "event", "rec", "pvstart", "pvend", "song_duration", "off_ranking", "ad_def", "remaster",
                        "special_pv", "challenge_track", "bonus", "genre_id", "title", "artist", "sort_jp_index",
                        "sort_ex_index", "filename"]
-            ui_table_mmMusic = dpg.add_table(columns, height=0, width=0,
+            self.ui_table_mmMusic = dpg.add_table(columns, height=0, width=0,
                            callback=lambda: [self.SelectTableRow("table_mmMusic"),
                                              dpg.set_value("dataMmMusic_input_addTrackId",
                                                             int(self.GetFirstSelectedCellValue("table_mmMusic"))),
                                              self.GetDataFromDb("", data.mmMusic)])
 
-        with dpg.window(label="mmScore Grid", show=False) as ui_window_mmScoreDisplay:
+        with dpg.window(label="mmScore Grid", show=False) as self.ui_window_mmScoreDisplay:
             columns = ["track_id", "name", "lv", "designer_id", "utage_mode", "safename"]
-            ui_table_mmScore = dpg.add_table(columns, height=0, width=0,
+            self.ui_table_mmScore = dpg.add_table(columns, height=0, width=0,
                            callback=lambda: [self.SelectTableRow("table_mmScore"),
                                              dpg.set_value("dataMmScore_input_addTrackId",
                                                             int(self.GetFirstSelectedCellValue("table_mmScore")[:-2])),
@@ -489,41 +489,41 @@ class GUI:
 
         with dpg.window(label="Artist Name Grid", show=False) as window_textoutArtistDisplay:
             columns = ["artist_id", "ex_artist_title", "jp_artist_title"]
-            ui_table_textoutArtist = dpg.add_table(columns, height=0, width=0,
+            self.ui_table_textoutArtist = dpg.add_table(columns, height=0, width=0,
                            callback=lambda: [self.SelectTableRow("table_textoutArtist"),
                                              dpg.set_value("dataArtist_input_addArtistId",
                                                             int(self.GetFirstSelectedCellValue("table_textoutArtist"))),
                                              self.GetDataFromDb("", data.artist)])
 
-        with dpg.window(label="Track Name Grid", show=False) as ui_window_textoutTrackDisplay:
+        with dpg.window(label="Track Name Grid", show=False) as self.ui_window_textoutTrackDisplay:
             columns = ["track_id", "ex_track_title", "jp_track_title"]
-            ui_table_textoutTrack = dpg.add_table(columns, height=0, width=0,
+            self.ui_table_textoutTrack = dpg.add_table(columns, height=0, width=0,
                            callback=lambda: [self.SelectTableRow("table_textoutTrack"),
                                              dpg.set_value("dataTrack_input_addTrackId",
                                                             int(self.GetFirstSelectedCellValue("table_textoutTrack"))),
                                              self.GetDataFromDb("", data.track)])
 
-        with dpg.window(label="Track Designer Grid", show=False) as ui_window_textoutDesignerDisplay:
+        with dpg.window(label="Track Designer Grid", show=False) as self.ui_window_textoutDesignerDisplay:
             columns = ["designer_id", "ex_designer_name", "jp_designer_name"]
-            ui_table_textoutDesigner = dpg.add_table(columns, height=0, width=0,
+            self.ui_table_textoutDesigner = dpg.add_table(columns, height=0, width=0,
                            callback=lambda: [self.SelectTableRow("table_textoutDesigner"),
                                              dpg.set_value("dataDesigner_input_addDesignerId",
                                                             int(self.GetFirstSelectedCellValue(
                                                                 "table_textoutDesigner"))),
                                              self.GetDataFromDb("", data.designer)])
 
-        with dpg.window(label="Sound BGM Grid", show=False) as ui_window_soundBgmDisplay:
+        with dpg.window(label="Sound BGM Grid", show=False) as self.ui_window_soundBgmDisplay:
             columns = ["track_id", "title"]
-            ui_table_soundBgm = dpg.add_table(columns, height=0, width=0,
+            self.ui_table_soundBgm = dpg.add_table(columns, height=0, width=0,
                            callback=lambda: [self.SelectTableRow("table_soundBgm"),
                                              dpg.set_value("dataSoundBgm_input_addTrackId",
                                                             int(self.GetFirstSelectedCellValue("table_soundBgm"))),
                                              self.GetDataFromDb("", data.soundBgm)])
 
-        with dpg.window(label="Log") as ui_window_log:
-            ui_log_input_log = dpg.add_input_text(label="", multiline=True, readonly=True, width=600, height=1200)
+        with dpg.window(label="Log") as self.ui_window_log:
+            self.ui_log_input_log = dpg.add_input_text(label="", multiline=True, readonly=True, width=600, height=1200)
             dpg.add_same_line()
-            ui_log_button_clearLog = dpg.add_button(label="Clear", callback=lambda: dpg.set_value("log_input_log", ""))
+            self.ui_log_button_clearLog = dpg.add_button(label="Clear", callback=lambda: dpg.set_value("log_input_log", ""))
 
         dpg.enable_docking(dock_space=True)
 

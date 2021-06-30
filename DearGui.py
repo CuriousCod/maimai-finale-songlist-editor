@@ -85,7 +85,7 @@ def DefaultDataMmScoreFields():
         dpg.set_value(f"dataMmScore_input_addDifficulty_0{i}", 0.0)
         dpg.set_value(f"dataMmScore_input_addDesignerId_0{i}", 0)
         dpg.set_value(f"dataMmScore_checkbox_addIsInUtage_0{i}", False)
-    dpg.set_value("dataMmScore_input_addBaseSafename", "")
+        dpg.set_value("dataMmScore_input_addBaseSafename", "")
 
 
 def UpdateDataTrackNameFields(row):
