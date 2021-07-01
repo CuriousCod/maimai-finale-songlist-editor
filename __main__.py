@@ -50,8 +50,13 @@ def InitDb(conn):
         CreateTable(conn, table)
 
 
-def LoadFilesIntoDb(path, db):
+def LoadFilesIntoNewDb(path, db):
+    if not db:
+        return
+
     conn = CreateConnection(db)
+
+    InitDb(conn)
 
     readDat.ReadMmMusic(conn, path)
     readDat.ReadMmScore(conn, path)
@@ -84,7 +89,7 @@ def DecryptFilesInInput():
         os.mkdir(f"{os.getcwd()}/input/decrypted")
 
     for file in os.listdir(f"{os.getcwd()}/input"):
-        if file != "SoundBGM.txt" and not os.path.isdir(f"{os.getcwd()}/input/{file}"):
+        if file != "SoundBGM.txt" and not os.path.isdir(f"{os.getcwd()}/input/{file}") and file.endswith(".bin"):
             # print(f"{os.getcwd()}/input/{file}")
             plain_text = crypt.convert_to_text(f"{os.getcwd()}/input/{file}")
             with open(f"{os.getcwd()}/input/decrypted/{file.replace('.bin', '')}.txt", "wb") as f:
@@ -157,6 +162,8 @@ class GUI:
         InitDb(conn)
         conn.close()
 
+        self.ActivateDisplay()
+
 
     def DisplayTable(self, sender, data):
         # Callbacks run on a separate thread, sqlite doesn't like that
@@ -210,6 +217,24 @@ class GUI:
 
         tempConn.close()
 
+    def DatabaseAccess(self, action):
+        root = tkinter.Tk()
+        root.withdraw()
+
+        if action == "create":
+            file = filedialog.asksaveasfilename(title=f"Create New Database", filetypes=[("Database files", "*.db")])
+        else:  # load
+            file = filedialog.askopenfilename(title=f"Load Database", filetypes=[("Database files", "*.db")])
+
+        if file:
+            if not file.endswith(".db"):
+                file = f"{file}.db"
+
+            dpg.set_value(self.ui_filesFinale_input_dbName, file)
+            self.db = file
+
+        return file
+
     def SelectMaimaiFolder(self, version):
         root = tkinter.Tk()
         root.withdraw()
@@ -232,23 +257,23 @@ class GUI:
                 if os.path.isfile(f"{folder}/data/tables/mmtextout_jp.bin"):
                     dpg.set_value(self.ui_filesFinale_input_mmTextoutJp, f"{folder}/data/tables/mmtextout_jp.bin")
                     shutil.copy(f"{folder}/data/tables/mmtextout_jp.bin", f"{os.getcwd()}/input/mmtextout_jp.bin")
-        elif version == "Murasaki":
+        elif version == "Murasaki": # Don't copy files, as they don't need to be decrypted or modified
             if folder[folder.rfind("/") + 1:] == "maimai":
                 if os.path.isfile(f"{folder}/data/SoundBGM.txt"):
                     dpg.set_value(self.ui_filesMurasaki_input_soundBgm, f"{folder}/data/SoundBGM.txt")
-                    shutil.copy(f"{folder}/data/SoundBGM.txt", f"{os.getcwd()}/input/SoundBGM.txt")
+                    # shutil.copy(f"{folder}/data/SoundBGM.txt", f"{os.getcwd()}/input/SoundBGM.txt")
                 if os.path.isfile(f"{folder}/data/tables/mmMusic.tbl"):
                     dpg.set_value(self.ui_filesMurasaki_input_mmMusic, f"{folder}/data/tables/mmMusic.tbl")
-                    shutil.copy(f"{folder}/data/tables/mmMusic.tbl", f"{os.getcwd()}/input/mmMusic.tbl")
+                    # shutil.copy(f"{folder}/data/tables/mmMusic.tbl", f"{os.getcwd()}/input/mmMusic.tbl")
                 if os.path.isfile(f"{folder}/data/tables/mmSdpg.tbl"):
                     dpg.set_value(self.ui_filesMurasaki_input_mmScore, f"{folder}/data/tables/mmSdpg.tbl")
-                    shutil.copy(f"{folder}/data/tables/mmSdpg.tbl", f"{os.getcwd()}/input/mmSdpg.tbl")
+                    # shutil.copy(f"{folder}/data/tables/mmSdpg.tbl", f"{os.getcwd()}/input/mmSdpg.tbl")
                 if os.path.isfile(f"{folder}/data/tables/mmtextout_ex.tbl"):
                     dpg.set_value(self.ui_filesMurasaki_input_mmTextoutEx, f"{folder}/data/tables/mmtextout_ex.tbl")
-                    shutil.copy(f"{folder}/data/tables/mmtextout_ex.tbl", f"{os.getcwd()}/input/mmtextout_ex.tbl")
+                    # shutil.copy(f"{folder}/data/tables/mmtextout_ex.tbl", f"{os.getcwd()}/input/mmtextout_ex.tbl")
                 if os.path.isfile(f"{folder}/data/tables/mmtextout_jp.tbl"):
                     dpg.set_value(self.ui_filesMurasaki_input_mmTextoutJp, f"{folder}/data/tables/mmtextout_jp.tbl")
-                    shutil.copy(f"{folder}/data/tables/mmtextout_jp.tbl", f"{os.getcwd()}/input/mmtextout_jp.tbl")
+                    # shutil.copy(f"{folder}/data/tables/mmtextout_jp.tbl", f"{os.getcwd()}/input/mmtextout_jp.tbl")
         elif version == "Green":
             pass
 
@@ -298,8 +323,13 @@ class GUI:
                     self.ui_filesFinale_input_soundBgm = dpg.add_input_text(label="soundBGM.txt")
                     self.ui_filesFinale_button_decryptFiles = dpg.add_button(label="Decrypt Files",
                                     callback=DecryptFilesInInput)
-                    self.ui_filesFinale_button_loadFilesIntoDatabase = dpg.add_button(label="Load Files Into Database",
-                                    callback=lambda: LoadFilesIntoDb(f"{os.getcwd()}/input", self.db))
+                    self.ui_filesFinale_button_createDatabaseFromFiles = dpg.add_button(label="Create Database From Files",
+                                    callback=lambda: LoadFilesIntoNewDb(f"{os.getcwd()}/input", self.DatabaseAccess("create")))
+                    dpg.add_spacing(count=7)
+                    self.ui_filesFinale_input_dbName = dpg.add_input_text(label="Current Database")
+                    self.ui_filesFinale_button_changeDb = dpg.add_button(label="Change Database", callback=lambda: self.DatabaseAccess("load"))
+                    dpg.set_value(self.ui_filesFinale_input_dbName, self.db)
+
                 with dpg.tab(label="Murasaki"):
                     self.ui_filesMurasaki_button_selectMaimaiFolder = dpg.add_button(label="Select maimai Murasaki folder",
                                     callback=lambda: self.SelectMaimaiFolder("Murasaki"))
@@ -670,12 +700,12 @@ class GUI:
                 return
 
             # Get all rows where score id is not 0
-            for i in range(1, 7, 1):
-                if dpg.get_value(f"dataMmScore_input_addScoreId_0{i}") != 0:
-                    scoreId = hlp.AffixZeroesToString(dpg.get_value(f"dataMmScore_input_addScoreId_0{i}"), 2)
-                    lv = f'{round(dpg.get_value(f"dataMmScore_input_addDifficulty_0{i}"), 1):g}' # :g Removes trailing zeroes
-                    designerId = dpg.get_value(f"dataMmScore_input_addDesignerId_0{i}")
-                    utageMode = hlp.BoolToValueReversed(dpg.get_value(f"dataMmScore_checkbox_addIsInUtage_0{i}"))
+            for i in range(0, 6, 1):
+                if dpg.get_value(self.ui_dataMmScore_input_addScoreId[i]) != 0:
+                    scoreId = hlp.AffixZeroesToString(dpg.get_value(self.ui_dataMmScore_input_addScoreId[i]), 2)
+                    lv = f'{round(dpg.get_value(self.ui_dataMmScore_input_addDifficulty[i]), 1):g}' # :g Removes trailing zeroes
+                    designerId = dpg.get_value(self.ui_dataMmScore_input_addDesignerId[i])
+                    utageMode = hlp.BoolToValueReversed(dpg.get_value(self.ui_dataMmScore_checkbox_addIsInUtage[i]))
                     baseSafename = dpg.get_value(self.ui_dataMmScore_input_addBaseSafename)
 
                     name = f"eScore_{hlp.AffixZeroesToString(trackId, 3)}_{baseSafename}_{scoreId}"
@@ -756,9 +786,9 @@ class GUI:
 
             if len(row) > 0:
                 row = row[0]
-                dgHelp.UpdateDataMmMusicFields(row)
+                dgHelp.UpdateDataMmMusicFields(self, row)
             else:
-                dgHelp.DefaultDataMmMusicFields()
+                dgHelp.DefaultDataMmMusicFields(self)
 
         # Grabs all scores for the track id
         elif data == get.mmScore:
@@ -766,8 +796,8 @@ class GUI:
             rows = dba.SelectMmScoreById(tempConn, hlp.AffixZeroesToString(trackId, 3))
 
             # Reset fields first
-            dgHelp.DefaultDataMmScoreFields()
-            dgHelp.UpdateDataMmScoreFields(rows)
+            dgHelp.DefaultDataMmScoreFields(self)
+            dgHelp.UpdateDataMmScoreFields(self, rows)
 
         elif data == get.soundBgm:
             trackId = hlp.AffixZeroesToString(dpg.get_value(self.ui_dataSoundBgm_input_addTrackId), 3)
@@ -791,19 +821,19 @@ class GUI:
         dpg.set_value(self.ui_dataMmScore_input_addTrackId, dpg.get_value(self.ui_import_input_importTrackId))
 
         # mmMusic
-        dgHelp.UpdateDataMmMusicFields(cvrt.ConvertSplitMmMusicLineFromMurasakiToFinale(
+        dgHelp.UpdateDataMmMusicFields(self, cvrt.ConvertSplitMmMusicLineFromMurasakiToFinale(
                 readDat.ReadMmMusicSingleLine(dpg.get_value(self.ui_filesMurasaki_input_mmMusic),
                                               dpg.get_value(self.ui_import_input_importTrackId))))
 
         # mmScore
-        dgHelp.DefaultDataMmScoreFields()
+        dgHelp.DefaultDataMmScoreFields(self, )
         dgHelp.UpdateDataMmScoreFields(readDat.ReadMmScoreLinesWithTrackId(dpg.get_value(self.ui_filesMurasaki_input_mmScore), dpg.get_value(self.ui_import_input_importTrackId)))
 
         # Track name
         # TODO This should check that track id has updated in the mmMusic field
         trackExName = readDat.ReadMmTextoutLineWithId(dpg.get_value(self.ui_filesMurasaki_input_mmTextoutEx), dpg.get_value(self.ui_dataMmMusic_input_addTitleId), types.track)
         trackJpName = readDat.ReadMmTextoutLineWithId(dpg.get_value(self.ui_filesMurasaki_input_mmTextoutJp), dpg.get_value(self.ui_dataMmMusic_input_addTitleId), types.track)
-        dgHelp.UpdateDataTrackNameFields([dpg.get_value(self.ui_dataMmMusic_input_addTitleId), trackExName, trackJpName])
+        dgHelp.UpdateDataTrackNameFields(self, [dpg.get_value(self.ui_dataMmMusic_input_addTitleId), trackExName, trackJpName])
 
         self.AppendLog("Data imported")
 
@@ -852,10 +882,12 @@ class GUI:
             #self.config["Layout"][
             #    "MainWindow"] = f"{str(dpg.get_main_window_size()[0])}, {str(dpg.get_main_window_size()[1])}"
 
+            self.config["Database"]["Name"] = self.db
+
             supportedVersions = ["Finale", "Murasaki"]
 
             for version in supportedVersions:
-                for name, file in dgHelp.GetMaimaiFilesFromInput(version).items():
+                for name, file in dgHelp.GetMaimaiFilesFromInput(self, version).items():
                     if file:
                         self.config[f"Files{version}"][name] = file
 
@@ -885,7 +917,7 @@ class GUI:
             files.append(self.config[f"Files{version}"]["mmTextoutJp"])
             files.append(self.config[f"Files{version}"]["soundBgm"])
 
-            # dgHelp.SetMaimaiFilesFromConfig(version, files)
+            dgHelp.SetMaimaiFilesFromConfig(self, version, files)
 
     def GetCurrentWindowNames(self):
         windows = dpg.get_windows()
@@ -927,4 +959,4 @@ if __name__ == '__main__':
     # dba.InsertLineToTextOutExTrack(conn, ["0020", "love circulation"])
     # dba.UpdateLineToTextOutJpTrack(conn, ["恋愛サーキュレーション", "0020"])
 
-    GUI().ActivateDisplay()
+    GUI()

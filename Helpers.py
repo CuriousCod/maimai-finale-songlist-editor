@@ -88,3 +88,22 @@ def GenreValueToFinaleText(value):
             return genre
 
     return "0"
+
+
+def GetMaimaiVersionFileVariables(self, version: str) -> list:
+    fileVariables = []
+
+    if version == "Finale":
+        fileVariables.append(self.ui_filesFinale_input_mmMusic)
+        fileVariables.append(self.ui_filesFinale_input_mmScore)
+        fileVariables.append(self.ui_filesFinale_input_mmTextoutEx)
+        fileVariables.append(self.ui_filesFinale_input_mmTextoutJp)
+        fileVariables.append(self.ui_filesFinale_input_soundBgm)
+    elif version == "Murasaki":
+        fileVariables.append(self.ui_filesMurasaki_input_mmMusic)
+        fileVariables.append(self.ui_filesMurasaki_input_mmScore)
+        fileVariables.append(self.ui_filesMurasaki_input_mmTextoutEx)
+        fileVariables.append(self.ui_filesMurasaki_input_mmTextoutJp)
+        fileVariables.append(self.ui_filesMurasaki_input_soundBgm)
+
+    return fileVariables

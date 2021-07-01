@@ -7,6 +7,10 @@ import os
 def ReadMmMusic(conn, path):
     dataLines = []
 
+    if not os.path.isfile(path + r"/decrypted/mmMusic.txt"):
+        print("Couldn't find mmMusic.txt\nPlease decrypt the files before creating a database")
+        return
+
     with open(path + r"/decrypted/mmMusic.txt", "r", encoding="UTF16") as f:
         for line in f.readlines():
             if line.startswith("MMMUSIC"):
@@ -33,6 +37,10 @@ def ReadMmMusicSingleLine(fileFullname, trackId):
 
 def ReadMmScore(conn, path):
     dataLines = []
+
+    if not os.path.isfile(path + r"/decrypted/mmScore.txt"):
+        print("Couldn't find mmScore.txt\nPlease decrypt the files before creating a database")
+        return
 
     with open(path + r"/decrypted/mmScore.txt", "r", encoding="UTF16") as f:
         for line in f.readlines():
@@ -112,6 +120,10 @@ def ReadTextOutEx(conn, path):
     dataLinesTrack = []
     dataLinesDesigner = []
 
+    if not os.path.isfile(path + r"/decrypted/mmtextout_ex.txt"):
+        print("Couldn't find mmtextout_ex.txt\nPlease decrypt the files before creating a database")
+        return
+
     with open(path + r"/decrypted/mmtextout_ex.txt", "r", encoding="UTF16") as f:
         for line in f.readlines():
             if line.startswith("MMTEXTOUT( L\"RST_MUSICARTIST"):
@@ -157,6 +169,10 @@ def ReadTextOutJp(conn, path):
     dataLinesTrack = []
     dataLinesDesigner = []
 
+    if not os.path.isfile(path + r"/decrypted/mmtextout_jp.txt"):
+        print("Couldn't find mmtextout_jp.txt\nPlease decrypt the files before creating a database")
+        return
+
     with open(path + r"/decrypted/mmtextout_jp.txt", "r", encoding="UTF16") as f:
         for line in f.readlines():
             if line.startswith("MMTEXTOUT( L\"RST_MUSICARTIST"):
@@ -199,6 +215,10 @@ def ReadTextOutJp(conn, path):
 
 def ReadSoundBgm(conn, path):
     dataLines = []
+
+    if not os.path.isfile(path + r"/SoundBGM.txt"):
+        print("Couldn't find SoundBGM.txt\nPlease decrypt the files before creating a database")
+        return
 
     with open(path + r"/SoundBGM.txt", "r", encoding="UTF8") as f:
         for line in f.readlines():
