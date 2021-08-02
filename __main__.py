@@ -17,6 +17,7 @@ import DatabaseActions as dba
 import Helpers as hlp
 import dearpygui.dearpygui as dpg
 
+
 # TODO Display all ids without data
 # TODO Function to check all data connections for an id
 # TODO Import all required data from other maimai versions based on mmusic id
@@ -165,7 +166,7 @@ class GUI:
         self.ActivateDisplay()
 
 
-    def DisplayTable(self, sender, data):
+    def DisplayTable(self, data):
         # Callbacks run on a separate thread, sqlite doesn't like that
         tempConn = CreateConnection(self.db)
         table = hlp.DataContainers()
@@ -173,9 +174,17 @@ class GUI:
         if data == table.mmMusic:
             lines = dba.SelectMmMusic(tempConn)
             dpg.show_item(self.ui_window_mmMusicDisplay)
-            dpg.clear_table("table_mmMusic")
+
             for line in lines:
-                dpg.add_row("table_mmMusic", line)
+                for col in line:
+                    dpg.add_text(col, parent=self.ui_table_mmMusic)
+                    dpg.add_table_next_column(parent=self.ui_table_mmMusic)
+
+            # dpg.clear_table("table_mmMusic")
+            #
+            # for line in lines:
+            #     dpg.add_row("table_mmMusic", line)
+            #     dpg.add_table_row()
 
         elif data == table.mmScore:
             lines = dba.SelectMmScore(tempConn)
@@ -352,7 +361,7 @@ class GUI:
                 # TODO add tips
                 with dpg.tab(label="mmMusic"):
                     self.ui_dataMmMusic_input_addTrackId = dpg.add_input_int(label="Track ID", max_value=999, min_value=0,
-                                       step_fast=100, callback=self.GetDataFromDb, user_data=data.mmMusic)
+                                       step_fast=100, callback=lambda: self.GetDataFromDb("", data.mmMusic))
                     # name
                     self.ui_dataMmMusic_input_addVersion = dpg.add_input_int(label="Version", max_value=99999, min_value=0,
                                        step_fast=1000, default_value=10000)
@@ -392,7 +401,7 @@ class GUI:
                                        min_value=0, step_fast=10000, step=1)
                     self.ui_dataMmMusic_input_addFilename = dpg.add_input_text(label="Filename")
                     self.ui_dataMmMusic_button_showMmMusicTable = dpg.add_button(label="Show music table",
-                                    callback=self.DisplayTable, user_data=data.mmMusic)
+                                    callback=lambda: self.DisplayTable(data.mmMusic))
                     self.ui_dataMmMusic_button_addTrackToDb = dpg.add_button(label="Add track to database",
                                     callback=self.InsertDataToDb, user_data=data.mmMusic)
 
@@ -510,11 +519,14 @@ class GUI:
                        "event", "rec", "pvstart", "pvend", "song_duration", "off_ranking", "ad_def", "remaster",
                        "special_pv", "challenge_track", "bonus", "genre_id", "title", "artist", "sort_jp_index",
                        "sort_ex_index", "filename"]
-            self.ui_table_mmMusic = dpg.add_table(height=0, width=0,
-                           callback=lambda: [self.SelectTableRow("table_mmMusic"),
-                                             dpg.set_value(self.ui_dataMmMusic_input_addTrackId,
-                                                            int(self.GetFirstSelectedCellValue("table_mmMusic"))),
-                                             self.GetDataFromDb("", data.mmMusic)])
+            with dpg.table(header_row=True, resizable=True, sortable=True, hideable=True) as self.ui_table_mmMusic:
+                for column in columns:
+                    dpg.add_table_column(label=column)
+            # self.ui_table_mmMusic = dpg.add_table(height=0, width=0,
+            #                callback=lambda: [self.SelectTableRow("table_mmMusic"),
+            #                                  dpg.set_value(self.ui_dataMmMusic_input_addTrackId,
+            #                                                 int(self.GetFirstSelectedCellValue("table_mmMusic"))),
+            #                                  self.GetDataFromDb("", data.mmMusic)])
 
         with dpg.window(label="mmScore Grid", show=False) as self.ui_window_mmScoreDisplay:
             columns = ["track_id", "name", "lv", "designer_id", "utage_mode", "safename"]
@@ -743,6 +755,7 @@ class GUI:
         tempConn.close()
 
     def GetDataFromDb(self, sender, data):
+
         tempConn = CreateConnection(self.db)
         get = hlp.DataContainers()
 
@@ -857,8 +870,8 @@ class GUI:
                        f"{dpg.get_value(self.ui_log_input_log)}{datetime.datetime.now().strftime('%H:%M:%S')} - {text}\n")
 
     def MainCallback(self):
-        dpg.set_item_width("log_input_log", dpg.get_drawing_size("window_log")[0] - 100)
-        dpg.set_item_height("log_input_log", dpg.get_drawing_size("window_log")[1] - 35)
+        dpg.set_item_width(self.ui_log_input_log, dpg.get_drawing_size("window_log")[0] - 100)
+        dpg.set_item_height(self.ui_log_input_log, dpg.get_drawing_size("window_log")[1] - 35)
 
     def OnStart(self):
         pass
