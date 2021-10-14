@@ -125,3 +125,12 @@ def SetMaimaiFilesFromConfig(self, version, files):
     dpg.set_value(fileVariables[3], files[3])
     dpg.set_value(fileVariables[4], files[4])
 
+
+def FillTable(table, lines):
+    for child in dpg.get_item_children(table, slot=1):
+        dpg.delete_item(child)
+
+    for line in lines:
+        with dpg.table_row(parent=table):
+            for row in line:
+                dpg.add_text(row)
