@@ -1,14 +1,16 @@
+from enum import Enum
+
 
 # Common names used around in the application
-class DataContainers:
-    mmMusic = "mmMusic"
-    mmScore = "mmScore"
-    mmTextoutEx = "mmTextoutEx"
-    mmTextoutJp = "mmTextoutJp"
-    soundBgm = "soundBgm"
-    designer = "designer"
-    track = "track"
-    artist = "artist"
+class CommonData(Enum):
+    mmMusic = 1,
+    mmScore = 2,
+    mmTextoutEx = 3,
+    mmTextoutJp = 4,
+    soundBgm = 5,
+    designer = 6,
+    track = 7,
+    artist = 8
 
 
 def SplitMusicOrScoreLine(line):

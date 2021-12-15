@@ -168,7 +168,7 @@ class GUI:
     def DisplayTable(self, sender, app_data, user_data):
         # Callbacks run on a separate thread, sqlite doesn't like that
         tempConn = CreateConnection(self.db)
-        table = hlp.DataContainers()
+        table = hlp.CommonData
 
         data = user_data
 
@@ -309,34 +309,40 @@ class GUI:
         dpg.create_viewport(title="maimaiTool")
         dpg.setup_dearpygui()
 
-        data = hlp.DataContainers()
+        data = hlp.CommonData
 
         with dpg.window(label="Select maimai files") as ui_window_selectMaimaiFiles:
             with dpg.tab_bar(label="maimai Versions"):
                 with dpg.tab(label="FiNALE"):
+                    dpg.add_spacer(height=5)
                     self.ui_filesFinale_button_selectMaimaiFolder = dpg.add_button(label="Select maimai FiNALE folder",
                                                                                    callback=lambda: self.SelectMaimaiFolder(
-                                                                                       "Finale"))
+                                                                                       "Finale"), width=220, height=25)
+                    dpg.add_spacer(height=5)
                     self.ui_filesFinale_input_mmMusic = dpg.add_input_text(label="mmMusic.bin")
                     self.ui_filesFinale_input_mmScore = dpg.add_input_text(label="mmScore.bin")
                     self.ui_filesFinale_input_mmTextoutEx = dpg.add_input_text(label="mmTextoutEx.bin")
                     self.ui_filesFinale_input_mmTextoutJp = dpg.add_input_text(label="mmTextoutJp.bin")
                     self.ui_filesFinale_input_soundBgm = dpg.add_input_text(label="soundBGM.txt")
+                    dpg.add_spacer(height=5)
                     self.ui_filesFinale_button_decryptFiles = dpg.add_button(label="Decrypt Files",
-                                                                             callback=DecryptFilesInInput)
+                                                                             callback=DecryptFilesInInput, width=220, height=25)
                     self.ui_filesFinale_button_createDatabaseFromFiles = dpg.add_button(
                         label="Create Database From Files",
-                        callback=lambda: LoadFilesIntoNewDb(f"{os.getcwd()}/input", self.DatabaseAccess("create")))
+                        callback=lambda: LoadFilesIntoNewDb(f"{os.getcwd()}/input", self.DatabaseAccess("create")), width=220, height=25)
                     dpg.add_spacer(width=7)
                     self.ui_filesFinale_input_dbName = dpg.add_input_text(label="Current Database")
+                    dpg.add_spacer(height=5)
                     self.ui_filesFinale_button_changeDb = dpg.add_button(label="Change Database",
-                                                                         callback=lambda: self.DatabaseAccess("load"))
+                                                                         callback=lambda: self.DatabaseAccess("load"), width=220, height=25)
                     dpg.set_value(self.ui_filesFinale_input_dbName, self.db)
 
                 with dpg.tab(label="Murasaki"):
+                    dpg.add_spacer(height=5)
                     self.ui_filesMurasaki_button_selectMaimaiFolder = dpg.add_button(
                         label="Select maimai Murasaki folder",
-                        callback=lambda: self.SelectMaimaiFolder("Murasaki"))
+                        callback=lambda: self.SelectMaimaiFolder("Murasaki"), width=220, height=25)
+                    dpg.add_spacer(height=5)
                     self.ui_filesMurasaki_input_mmMusic = dpg.add_input_text(label="mmMusic.tbl")
                     self.ui_filesMurasaki_input_mmScore = dpg.add_input_text(label="mmScore.tbl")
                     self.ui_filesMurasaki_input_mmTextoutEx = dpg.add_input_text(label="mmTextoutEx.tbl")
@@ -414,12 +420,15 @@ class GUI:
                                                                                  max_value=999999,
                                                                                  min_value=0, step_fast=10000, step=1)
                     self.ui_dataMmMusic_input_addFilename = dpg.add_input_text(label="Filename")
-                    self.ui_dataMmMusic_button_showMmMusicTable = dpg.add_button(label="Show music table",
+
+                    dpg.add_spacer(height=5)
+                    with dpg.group(horizontal=True):
+                        self.ui_dataMmMusic_button_showMmMusicTable = dpg.add_button(label="Show music table",
                                                                                  callback=self.DisplayTable,
-                                                                                 user_data=data.mmMusic)
-                    self.ui_dataMmMusic_button_addTrackToDb = dpg.add_button(label="Add track to database",
+                                                                                 user_data=data.mmMusic, width=200, height=25)
+                        self.ui_dataMmMusic_button_addTrackToDb = dpg.add_button(label="Add track to database",
                                                                              callback=self.InsertDataToDb,
-                                                                             user_data=data.mmMusic)
+                                                                             user_data=data.mmMusic, width=200, height=25)
 
                     self.ui_dataMmMusic_hidden_subcate = dpg.add_text(show=False, default_value="30")
                     self.ui_dataMmMusic_hidden_dress = dpg.add_text(show=False, default_value="0")
@@ -474,14 +483,15 @@ class GUI:
 
                     self.ui_dataMmScore_input_addBaseSafename = dpg.add_input_text(label="Score Basename")
 
+                    dpg.add_spacer(height=5)
                     with dpg.group(horizontal=True):
                         self.ui_dataMmScore_button_addScoreToDb = dpg.add_button(label="Add score to database",
                                                                                  callback=self.InsertDataToDb,
-                                                                                 user_data=data.mmScore)
+                                                                                 user_data=data.mmScore, width=200, height=25)
 
                         self.ui_dataMmScore_button_showMmScoreTable = dpg.add_button(label="Show score table",
                                                                                      callback=self.DisplayTable,
-                                                                                     user_data=data.mmScore)
+                                                                                     user_data=data.mmScore, width=200, height=25)
 
                 # -----------------------------------------------------------------------------------------------------#
 
@@ -493,14 +503,15 @@ class GUI:
                                                                               user_data=data.soundBgm)
                     self.ui_dataSoundBgm_input_addTitle = dpg.add_input_text(label="Track Filename")
 
+                    dpg.add_spacer(height=5)
                     with dpg.group(horizontal=True):
                         self.ui_dataSoundBgm_button_addSoundBgmToDB = dpg.add_button(label="Add sound bgm to database",
                                                                                      callback=self.InsertDataToDb,
-                                                                                     user_data=data.soundBgm)
+                                                                                     user_data=data.soundBgm, width=200, height=25)
 
                         self.ui_dataMmScore_button_showSoundBgmTable = dpg.add_button(label="Show sound table",
                                                                                       callback=self.DisplayTable,
-                                                                                      user_data=data.soundBgm)
+                                                                                      user_data=data.soundBgm, width=200, height=25)
 
                 # -----------------------------------------------------------------------------------------------------#
 
@@ -512,13 +523,15 @@ class GUI:
                                                                              user_data=data.artist)
                     self.ui_dataArtist_input_addArtistEx = dpg.add_input_text(label="Ex Artist")
                     self.ui_dataArtist_input_addArtistJp = dpg.add_input_text(label="Jp Artist")
+
+                    dpg.add_spacer(height=5)
                     with dpg.group(horizontal=True):
                         self.ui_dataArtist_button_addArtistToDb = dpg.add_button(label="Add artist to database",
                                                                                  callback=self.InsertDataToDb,
-                                                                                 user_data=data.artist)
+                                                                                 user_data=data.artist, width=200, height=25)
                         self.ui_dataTrack_button_showArtistTable = dpg.add_button(label="Show track artist table",
                                                                                   callback=self.DisplayTable,
-                                                                                  user_data=data.artist)
+                                                                                  user_data=data.artist, width=200, height=25)
 
                 # -----------------------------------------------------------------------------------------------------#
 
@@ -530,14 +543,16 @@ class GUI:
                                                                            user_data=data.track)
                     self.ui_dataTrack_input_addTrackEx = dpg.add_input_text(label="Ex Track")
                     self.ui_dataTrack_input_addTrackJp = dpg.add_input_text(label="Jp Track")
+
+                    dpg.add_spacer(height=5)
                     with dpg.group(horizontal=True):
                         self.ui_dataTrack_button_addTrackNameToDb = dpg.add_button(label="Add track name to database",
                                                                                    callback=self.InsertDataToDb,
-                                                                                   user_data=data.track)
+                                                                                   user_data=data.track, width=200, height=25)
 
                         self.ui_dataTrack_button_showTrackNameTable = dpg.add_button(label="Show track name table",
                                                                                      callback=self.DisplayTable,
-                                                                                     user_data=data.track)
+                                                                                     user_data=data.track, width=200, height=25)
 
                 # -----------------------------------------------------------------------------------------------------#
 
@@ -549,14 +564,16 @@ class GUI:
                                                                                  user_data=data.designer)
                     self.ui_dataDesigner_input_addDesignerEx = dpg.add_input_text(label="Ex Designer")
                     self.ui_dataDesigner_input_addDesignerJp = dpg.add_input_text(label="Jp Designer")
+
+                    dpg.add_spacer(height=5)
                     with dpg.group(horizontal=True):
                         self.ui_dataDesigner_button_addDesignerToDb = dpg.add_button(label="Add designer to database",
                                                                                      callback=self.InsertDataToDb,
-                                                                                     user_data=data.designer)
+                                                                                     user_data=data.designer, width=200, height=25)
 
                         self.ui_dataDesigner_button_showDesignerTable = dpg.add_button(
                             label="Show score designer table",
-                            callback=self.DisplayTable, user_data=data.designer)
+                            callback=self.DisplayTable, user_data=data.designer, width=200, height=25)
 
             self.ui_data_checkbox_replaceDbEntry = dpg.add_checkbox(label="Overwrite existing database entry")
 
@@ -632,7 +649,7 @@ class GUI:
 
         # dpg.add_additional_font("NotoSerifCJKjp-Medium.otf", 20, "japanese")
 
-        dpg.set_frame_callback(0, callback=self.OnStart)
+        dpg.set_frame_callback(1, callback=self.OnStart)
 
         # dpg.set_render_callback(self.MainCallback)
         dpg.set_exit_callback(self.OnExit)
@@ -649,7 +666,7 @@ class GUI:
         data = user_data
 
         tempConn = CreateConnection(self.db)
-        insert = hlp.DataContainers()
+        insert = hlp.CommonData
 
         if data == insert.artist:
             artistId = hlp.AffixZeroesToString(dpg.get_value(self.ui_dataArtist_input_addArtistId), 4)
@@ -816,7 +833,7 @@ class GUI:
         data = user_data
 
         tempConn = CreateConnection(self.db)
-        get = hlp.DataContainers()
+        get = hlp.CommonData
 
         if data == get.artist:
             artistId = hlp.AffixZeroesToString(dpg.get_value(self.ui_dataArtist_input_addArtistId), 4)
@@ -887,7 +904,7 @@ class GUI:
 
     # TODO Currently only supports Murasaki
     def ImportData(self):
-        types = hlp.DataContainers()
+        types = hlp.CommonData
 
         dpg.set_value(self.ui_dataMmMusic_input_addTrackId, dpg.get_value(self.ui_import_input_importTrackId))
         dpg.set_value(self.ui_dataMmScore_input_addTrackId, dpg.get_value(self.ui_import_input_importTrackId))
@@ -899,7 +916,7 @@ class GUI:
 
         # mmScore
         dgHelp.DefaultDataMmScoreFields(self, )
-        dgHelp.UpdateDataMmScoreFields(
+        dgHelp.UpdateDataMmScoreFields(self,
             readDat.ReadMmScoreLinesWithTrackId(dpg.get_value(self.ui_filesMurasaki_input_mmScore),
                                                 dpg.get_value(self.ui_import_input_importTrackId)))
 
@@ -912,11 +929,13 @@ class GUI:
         dgHelp.UpdateDataTrackNameFields(self, [dpg.get_value(self.ui_dataMmMusic_input_addTitleId), trackExName,
                                                 trackJpName])
 
+        # TODO SoundBGM, Artist, Designer
+
         self.AppendLog("Data imported")
 
     def FilterData(self, table):
         tempConn = CreateConnection(self.db)
-        filters = hlp.DataContainers()
+        filters = hlp.CommonData
 
         if table == filters.mmMusic:
             keyword = dpg.get_value(self.ui_table_mmMusic_input_filter)

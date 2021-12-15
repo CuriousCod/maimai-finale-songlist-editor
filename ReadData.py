@@ -74,7 +74,7 @@ def ReadMmScoreLinesWithTrackId(fileFullname, trackId):
 
 
 def ReadMmTextoutLineWithId(fileFullname, trackId, type):
-    types = hlp.DataContainers()
+    types = hlp.CommonData
     trackId = hlp.AffixZeroesToString(trackId, 4)
 
     if os.path.isfile(fileFullname):
