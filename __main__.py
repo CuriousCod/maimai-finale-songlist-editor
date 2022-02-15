@@ -238,47 +238,52 @@ class GUI:
 
         if version == "Finale":
             for dirpath, dirnames, filenames in os.walk(folder):
-                if "maimai" in dirpath:
-                    for filename in filenames:
-                        if filename == "SoundBGM.txt":
-                            dpg.set_value(self.ui_filesFinale_input_soundBgm, f"{dirpath}/SoundBGM.txt")
-                            shutil.copy(f"{dirpath}/SoundBGM.txt", f"{os.getcwd()}/input/SoundBGM.txt")
-                        if filename == "mmMusic.bin":
-                            dpg.set_value(self.ui_filesFinale_input_mmMusic, f"{dirpath}/mmMusic.bin")
-                            shutil.copy(f"{dirpath}/mmMusic.bin", f"{os.getcwd()}/input/mmMusic.bin")
-                        if filename == "mmScore.bin":
-                            dpg.set_value(self.ui_filesFinale_input_mmScore, f"{dirpath}/mmScore.bin")
-                            shutil.copy(f"{dirpath}/mmScore.bin", f"{os.getcwd()}/input/mmScore.bin")
-                        if filename == "mmtextout_ex.bin":
-                            dpg.set_value(self.ui_filesFinale_input_mmTextoutEx, f"{dirpath}/mmtextout_ex.bin")
-                            shutil.copy(f"{dirpath}/mmtextout_ex.bin", f"{os.getcwd()}/input/mmtextout_ex.bin")
-                        if filename == "mmtextout_jp.bin":
-                            dpg.set_value(self.ui_filesFinale_input_mmTextoutJp, f"{dirpath}/mmtextout_jp.bin")
-                            shutil.copy(f"{dirpath}/mmtextout_jp.bin", f"{os.getcwd()}/input/mmtextout_jp.bin")
+                if "maimai" not in dirpath:
+                    continue
+                for filename in filenames:
+                    if filename == "SoundBGM.txt":
+                        dpg.set_value(self.ui_filesFinale_input_soundBgm, f"{dirpath}/SoundBGM.txt")
+                        shutil.copy(f"{dirpath}/SoundBGM.txt", f"{os.getcwd()}/input/SoundBGM.txt")
+                    if filename == "mmMusic.bin":
+                        dpg.set_value(self.ui_filesFinale_input_mmMusic, f"{dirpath}/mmMusic.bin")
+                        shutil.copy(f"{dirpath}/mmMusic.bin", f"{os.getcwd()}/input/mmMusic.bin")
+                    if filename == "mmScore.bin":
+                        dpg.set_value(self.ui_filesFinale_input_mmScore, f"{dirpath}/mmScore.bin")
+                        shutil.copy(f"{dirpath}/mmScore.bin", f"{os.getcwd()}/input/mmScore.bin")
+                    if filename == "mmtextout_ex.bin":
+                        dpg.set_value(self.ui_filesFinale_input_mmTextoutEx, f"{dirpath}/mmtextout_ex.bin")
+                        shutil.copy(f"{dirpath}/mmtextout_ex.bin", f"{os.getcwd()}/input/mmtextout_ex.bin")
+                    if filename == "mmtextout_jp.bin":
+                        dpg.set_value(self.ui_filesFinale_input_mmTextoutJp, f"{dirpath}/mmtextout_jp.bin")
+                        shutil.copy(f"{dirpath}/mmtextout_jp.bin", f"{os.getcwd()}/input/mmtextout_jp.bin")
 
         elif version == "Murasaki":  # Don't copy files, as they don't need to be decrypted or modified
             for dirpath, dirnames, filenames in os.walk(folder):
-                if "maimai" in dirpath:
-                    for filename in filenames:
-                        if filename == "SoundBGM.txt":
-                            dpg.set_value(self.ui_filesMurasaki_input_soundBgm, f"{dirpath}/SoundBGM.txt")
-                        if filename == "mmMusic.tbl":
-                            dpg.set_value(self.ui_filesMurasaki_input_mmMusic, f"{dirpath}/mmMusic.tbl")
-                        if filename == "mmScore.tbl":
-                            dpg.set_value(self.ui_filesMurasaki_input_mmScore, f"{dirpath}/mmScore.tbl")
-                        if filename == "mmtextout_ex.tbl":
-                            dpg.set_value(self.ui_filesMurasaki_input_mmTextoutEx, f"{dirpath}/mmtextout_ex.tbl")
-                        if filename == "mmtextout_jp.tbl":
-                            dpg.set_value(self.ui_filesMurasaki_input_mmTextoutJp, f"{dirpath}/mmtextout_jp.tbl")
+                if "maimai" not in dirpath:
+                    continue
+                for filename in filenames:
+                    if filename == "SoundBGM.txt":
+                        dpg.set_value(self.ui_filesMurasaki_input_soundBgm, f"{dirpath}/SoundBGM.txt")
+                    if filename == "mmMusic.tbl":
+                        dpg.set_value(self.ui_filesMurasaki_input_mmMusic, f"{dirpath}/mmMusic.tbl")
+                    if filename == "mmScore.tbl":
+                        dpg.set_value(self.ui_filesMurasaki_input_mmScore, f"{dirpath}/mmScore.tbl")
+                    if filename == "mmtextout_ex.tbl":
+                        dpg.set_value(self.ui_filesMurasaki_input_mmTextoutEx, f"{dirpath}/mmtextout_ex.tbl")
+                    if filename == "mmtextout_jp.tbl":
+                        dpg.set_value(self.ui_filesMurasaki_input_mmTextoutJp, f"{dirpath}/mmtextout_jp.tbl")
         elif version == "Green":
             pass
 
     def GenerateAndEncryptFiles(self):
         GenerateFilesFromDb(self.db)
         self.AppendLog("Files created")
-        if dpg.get_value(self.ui_generate_checkbox_encryptFiles):
-            EncryptFilesInOutput()
-            self.AppendLog("Encryption complete")
+
+        if not dpg.get_value(self.ui_generate_checkbox_encryptFiles):
+            return
+
+        EncryptFilesInOutput()
+        self.AppendLog("Encryption complete")
 
     def SelectTableRow(self, table):
         if len(dpg.get_table_selections(table)) > 1:
@@ -306,7 +311,7 @@ class GUI:
 
     def ActivateDisplay(self):
         dpg.create_context()
-        dpg.create_viewport(title="maimaiTool")
+        dpg.create_viewport(title="Otohime - maimai FiNALE data editor")
         dpg.setup_dearpygui()
 
         data = hlp.CommonData
@@ -348,13 +353,14 @@ class GUI:
                     self.ui_filesMurasaki_input_mmTextoutEx = dpg.add_input_text(label="mmTextoutEx.tbl")
                     self.ui_filesMurasaki_input_mmTextoutJp = dpg.add_input_text(label="mmTextoutJp.tbl")
                     self.ui_filesMurasaki_input_soundBgm = dpg.add_input_text(label="soundBGM.txt")
-                with dpg.tab(label="Green"):
-                    pass
-        with dpg.window(label="Import maimai data") as self.ui_window_importMaimaiData:
+                # with dpg.tab(label="Green"):
+                #     pass
+        with dpg.window(label="Import maimai data from older versions") as self.ui_window_importMaimaiData:
             self.ui_import_input_importTrackId = dpg.add_input_int(min_value=0, step_fast=10, max_value=99999,
-                                                                   label="Track Id", default_value=0)
+                                                                   label="Track Id", default_value=0, min_clamped=True)
             self.ui_import_combo_importVersion = dpg.add_combo(label="Import from version",
-                                                               items=["maimai Murasaki", "maimai Green"],
+                                                               items=["maimai Murasaki"],
+                                                               #items=["maimai Murasaki", "maimai Green"],
                                                                default_value="maimai Murasaki")
             self.ui_import_button_importTrackId = dpg.add_button(label="Import data", callback=self.ImportData)
 
@@ -365,10 +371,11 @@ class GUI:
                 # -----------------------------------------------------------------------------------------------------#
 
                 with dpg.tab(label="mmMusic"):
+                    dpg.add_text("mmMusic")
                     self.ui_dataMmMusic_input_addTrackId = dpg.add_input_int(label="Track ID", max_value=999,
                                                                              min_value=0,
                                                                              step_fast=100, callback=self.GetDataFromDb,
-                                                                             user_data=data.mmMusic)
+                                                                             user_data=data.mmMusic, min_clamped=True)
                     # name
                     self.ui_dataMmMusic_input_addVersion = dpg.add_input_int(label="Version", max_value=99999,
                                                                              min_value=0,
@@ -448,6 +455,7 @@ class GUI:
                 # -----------------------------------------------------------------------------------------------------#
 
                 with dpg.tab(label="mmScore"):
+                    dpg.add_text("mmScore")
                     self.ui_dataMmScore_input_addTrackId = dpg.add_input_int(label="Track ID", max_value=999,
                                                                              min_value=0,
                                                                              step_fast=100, default_value=0,
@@ -496,6 +504,7 @@ class GUI:
                 # -----------------------------------------------------------------------------------------------------#
 
                 with dpg.tab(label="Sound BGM"):
+                    dpg.add_text("Sound BGM")
                     self.ui_dataSoundBgm_input_addTrackId = dpg.add_input_int(label="Track ID", max_value=999,
                                                                               min_value=0,
                                                                               step_fast=100,
@@ -588,8 +597,8 @@ class GUI:
                                                                           f"{os.getcwd()}/output"))
 
         with dpg.window(label="mmMusic Grid", show=False) as self.ui_window_mmMusicDisplay:
-            self.ui_table_mmMusic_input_filter = dpg.add_input_text(label="Filter",
-                                                                    callback=lambda: self.FilterData(data.mmMusic))
+            # self.ui_table_mmMusic_input_filter = dpg.add_input_text(label="Filter",
+            #                                                         callback=lambda: self.FilterData(data.mmMusic))
             columns = ["track_id", "name", "ver", "subcate", "bpm", "sort_id", "dress", "darkness", "mile", "vl",
                        "event", "rec", "pvstart", "pvend", "song_duration", "off_ranking", "ad_def", "remaster",
                        "special_pv", "challenge_track", "bonus", "genre_id", "title", "artist", "sort_jp_index",
@@ -597,11 +606,6 @@ class GUI:
             with dpg.table(header_row=True, resizable=True, sortable=True, hideable=True) as self.ui_table_mmMusic:
                 for column in columns:
                     dpg.add_table_column(label=column)
-            # self.ui_table_mmMusic = dpg.add_table(height=0, width=0,
-            #                callback=lambda: [self.SelectTableRow("table_mmMusic"),
-            #                                  dpg.set_value(self.ui_dataMmMusic_input_addTrackId,
-            #                                                 int(self.GetFirstSelectedCellValue("table_mmMusic"))),
-            #                                  self.GetDataFromDb("", data.mmMusic)])
 
         with dpg.window(label="mmScore Grid", show=False) as self.ui_window_mmScoreDisplay:
             columns = ["track_id", "name", "lv", "designer_id", "utage_mode", "safename"]
@@ -645,18 +649,15 @@ class GUI:
         dpg.configure_app(docking=True, docking_space=True, load_init_file="dpg.ini", init_file="dpg.ini",
                           auto_save_init_file=True)
 
-        # TODO Fix these
-
-        # dpg.add_additional_font("NotoSerifCJKjp-Medium.otf", 20, "japanese")
+        with dpg.font_registry():
+            with dpg.font("NotoSerifCJKjp-Medium.otf", 20) as font1:
+                dpg.add_font_range_hint(dpg.mvFontRangeHint_Default)
+                dpg.add_font_range_hint(dpg.mvFontRangeHint_Japanese)
+                dpg.bind_font(font1)
 
         dpg.set_frame_callback(1, callback=self.OnStart)
 
-        # dpg.set_render_callback(self.MainCallback)
         dpg.set_exit_callback(self.OnExit)
-
-        # self.LoadConfig(self.GetCurrentWindowNames())
-
-        # dpg.set_main_window_title("maimaiTool")
 
         dpg.show_viewport()
         dpg.start_dearpygui()
@@ -906,46 +907,139 @@ class GUI:
     def ImportData(self):
         types = hlp.CommonData
 
-        dpg.set_value(self.ui_dataMmMusic_input_addTrackId, dpg.get_value(self.ui_import_input_importTrackId))
-        dpg.set_value(self.ui_dataMmScore_input_addTrackId, dpg.get_value(self.ui_import_input_importTrackId))
+        def GetVal(id: int):
+            return dpg.get_value(id)
 
-        # mmMusic
-        dgHelp.UpdateDataMmMusicFields(self, cvrt.ConvertSplitMmMusicLineFromMurasakiToFinale(
-            readDat.ReadMmMusicSingleLine(dpg.get_value(self.ui_filesMurasaki_input_mmMusic),
-                                          dpg.get_value(self.ui_import_input_importTrackId))))
+        def ValidateFile(file: str) -> bool:
+            if not file:
+                self.AppendLog("Please add files to import from into the Select maimai files window")
+                return False
 
-        # mmScore
-        dgHelp.DefaultDataMmScoreFields(self, )
-        dgHelp.UpdateDataMmScoreFields(self,
-            readDat.ReadMmScoreLinesWithTrackId(dpg.get_value(self.ui_filesMurasaki_input_mmScore),
-                                                dpg.get_value(self.ui_import_input_importTrackId)))
+            if not os.path.isfile(file):
+                self.AppendLog(f"{file} does not exist")
+                return False
+            return True
+
+        def ProcessMmMusic() -> bool:
+            mmMusicLine = readDat.ReadMmMusicSingleLine(mmMusicPath, importTrackId)
+
+            if not mmMusicLine:
+                self.AppendLog("Could not read mmMusic file")
+                return False
+
+            conversion = cvrt.ConvertSplitMmMusicLineFromMurasakiToFinale(mmMusicLine)
+            dgHelp.UpdateDataMmMusicFields(self, conversion)
+
+            return True
+
+        def ProcessMmScore() -> bool:
+            mmScoreLine = readDat.ReadMmScoreLinesWithTrackId(mmScorePath, importTrackId)
+
+            if not mmScoreLine:
+                self.AppendLog("Could not read mmScore file")
+                return False
+
+            if len(mmScoreLine) == 0:
+                self.AppendLog("No scores found for this track id")
+                return False
+
+            dgHelp.DefaultDataMmScoreFields(self)
+            dgHelp.UpdateDataMmScoreFields(self, mmScoreLine)
+
+            return True
+
+        def ProcessSoundBgm() -> bool:
+            soundBgmLine = readDat.ReadSoundBgmLineWithId(soundBgmPath, importTrackId)
+
+            if not soundBgmLine:
+                self.AppendLog("No track found in soundBGM file")
+                return False
+
+            if not dgHelp.UpdateSoundBgmFields(self, soundBgmLine):
+                self.AppendLog("Could not read soundBGM file")
+                return False
+
+            return True
+
+
+        mmMusicPath = GetVal(self.ui_filesMurasaki_input_mmMusic)
+        mmScorePath = GetVal(self.ui_filesMurasaki_input_mmScore)
+        mmTextoutExPath = GetVal(self.ui_filesMurasaki_input_mmTextoutEx)
+        mmTextoutJpPath = GetVal(self.ui_filesMurasaki_input_mmTextoutJp)
+        soundBgmPath = GetVal(self.ui_filesMurasaki_input_soundBgm)
+
+        files = [mmMusicPath, mmScorePath, mmTextoutExPath, mmTextoutJpPath, soundBgmPath]
+
+        for file in files:
+            if not ValidateFile(file):
+                return
+
+        dgHelp.DefaultDataMmMusicFields(self)
+
+        importTrackId = GetVal(self.ui_import_input_importTrackId)
+
+        if importTrackId == 0:
+            self.AppendLog("Please select a track id to import")
+            return
+
+        dpg.set_value(self.ui_dataMmMusic_input_addTrackId, importTrackId)
+        dpg.set_value(self.ui_dataMmScore_input_addTrackId, importTrackId)
+
+        if not ProcessMmMusic():
+            return
+
+        if not ProcessMmScore():
+            return
 
         # Track name
-        # TODO This should check that track id has updated in the mmMusic field
-        trackExName = readDat.ReadMmTextoutLineWithId(dpg.get_value(self.ui_filesMurasaki_input_mmTextoutEx),
-                                                      dpg.get_value(self.ui_dataMmMusic_input_addTitleId), types.track)
-        trackJpName = readDat.ReadMmTextoutLineWithId(dpg.get_value(self.ui_filesMurasaki_input_mmTextoutJp),
-                                                      dpg.get_value(self.ui_dataMmMusic_input_addTitleId), types.track)
-        dgHelp.UpdateDataTrackNameFields(self, [dpg.get_value(self.ui_dataMmMusic_input_addTitleId), trackExName,
-                                                trackJpName])
+        trackExName = readDat.ReadMmTextoutLineWithId(mmTextoutExPath, importTrackId, types.track)
 
-        # TODO SoundBGM, Artist, Designer
+        trackJpName = readDat.ReadMmTextoutLineWithId(mmTextoutJpPath, importTrackId, types.track)
 
-        self.AppendLog("Data imported")
+        if not trackExName or trackJpName:
+            self.AppendLog("Could not find track name")
 
-    def FilterData(self, table):
-        tempConn = CreateConnection(self.db)
-        filters = hlp.CommonData
+        dgHelp.UpdateDataTrackNameFields(self, [importTrackId, trackExName, trackJpName])
 
-        if table == filters.mmMusic:
-            keyword = dpg.get_value(self.ui_table_mmMusic_input_filter)
-            rows = dba.SelectMmMusicByLikeFilename(tempConn, keyword)
-            if len(rows) > 0:
-                dpg.clear_table("table_mmMusic")
-                for row in rows:
-                    dpg.add_row("table_mmMusic", row)
+        # Artist
+        artistExName = readDat.ReadMmTextoutLineWithId(mmTextoutExPath, importTrackId, types.artist)
 
-        tempConn.close()
+        artistJpName = readDat.ReadMmTextoutLineWithId(mmTextoutJpPath, importTrackId, types.artist)
+
+        if not artistExName or artistJpName:
+            self.AppendLog("Could not find artist name")
+
+        dgHelp.UpdateDataArtistFields(self, [importTrackId, artistExName, artistJpName])
+
+        # Designer
+        designerExName = readDat.ReadMmTextoutLineWithId(mmTextoutExPath, importTrackId, types.designer)
+
+        designerJpName = readDat.ReadMmTextoutLineWithId(mmTextoutJpPath, importTrackId, types.designer)
+
+        if not designerExName or designerJpName:
+            self.AppendLog("Could not find designer name")
+
+        dgHelp.UpdateDataDesignerFields(self, [importTrackId, designerExName, designerJpName])
+
+        if not ProcessSoundBgm():
+            return
+
+        self.AppendLog("Data imported successfully")
+
+    # TODO This will be removed as sorting is builtin in the newer DPG versions
+    # def FilterData(self, table):
+    #     tempConn = CreateConnection(self.db)
+    #     filters = hlp.CommonData
+    #
+    #     if table == filters.mmMusic:
+    #         keyword = dpg.get_value(self.ui_table_mmMusic_input_filter)
+    #         rows = dba.SelectMmMusicByLikeFilename(tempConn, keyword)
+    #         if len(rows) > 0:
+    #             dpg.clear_table("table_mmMusic")
+    #             for row in rows:
+    #                 dpg.add_row("table_mmMusic", row)
+    #
+    #     tempConn.close()
 
     def AppendLog(self, text):
         dpg.set_value(self.ui_log_input_log,
@@ -994,33 +1088,4 @@ class GUI:
 
 
 if __name__ == '__main__':
-    # path = r"L:\Games\SDEY_1.99"
-
-    # path = f"{os.getcwd()}/input"
-    # LoadFilesIntoDb(path)
-
-    # GenerateMmMusicFromDb(conn)
-    # GenerateMmScoreFromDb(conn)
-    # GenerateMmTextoutExFromDb(conn)
-    # GenerateMmTextoutJpFromDb(conn)
-    # GenerateSoundBgmFromDb(conn)
-
-    # dba.InsertLineToMusic(conn, cvrt.ConvertMmMusicLineFromGreentoFinale(340))
-    # dba.InsertLineToScore(conn, cvrt.ConvertMmScoreLineFromGreentoFinale(34001))
-    # dba.InsertLineToSoundBgm(conn, cvrt.ConvertSoundBgmLineFromGreentoFinale(164))
-    # dba.InsertLineToTextOutArtist(conn, cvrt.ConvertMmTextOutArtistFromGreenToFinale(20))
-    # dba.InsertLineToTextOutArtist(conn, cvrt.ConvertMmTextOutArtistFromGreenToFinale(20))
-
-    """
-    tmpl.CreateMmMusicFromTemplate(GenerateMmMusicFromDb(conn))
-    tmpl.CreateMmScoreFromTemplate(GenerateMmScoreFromDb(conn))
-    tmpl.CreateSoundBgmFromTemplate(GenerateSoundBgmFromDb(conn))
-    tmpl.CreateMmTextOutEx(GenerateMmTextoutExFromDb(conn))
-    tmpl.CreateMmTextOutJp(GenerateMmTextoutJpFromDb(conn))
-    EncryptFilesInOutput()
-    """
-
-    # dba.InsertLineToTextOutExTrack(conn, ["0020", "love circulation"])
-    # dba.UpdateLineToTextOutJpTrack(conn, ["恋愛サーキュレーション", "0020"])
-
     GUI()

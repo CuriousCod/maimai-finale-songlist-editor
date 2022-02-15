@@ -89,10 +89,46 @@ def DefaultDataMmScoreFields(self):
 
 
 def UpdateDataTrackNameFields(self, row):
+    if not row:
+        return False
+
     dpg.set_value(self.ui_dataTrack_input_addTrackId, row[0])
     dpg.set_value(self.ui_dataTrack_input_addTrackEx, row[1])
     dpg.set_value(self.ui_dataTrack_input_addTrackJp, row[2])
 
+    return True
+
+
+def UpdateDataArtistFields(self, row):
+    if not row:
+        return False
+
+    dpg.set_value(self.ui_dataArtist_input_addArtistId, row[0])
+    dpg.set_value(self.ui_dataArtist_input_addArtistEx, row[1])
+    dpg.set_value(self.ui_dataArtist_input_addArtistJp, row[2])
+
+    return True
+
+
+def UpdateDataDesignerFields(self, row):
+    if not row:
+        return False
+
+    dpg.set_value(self.ui_dataDesigner_input_addDesignerId, row[0])
+    dpg.set_value(self.ui_dataDesigner_input_addDesignerEx, row[1])
+    dpg.set_value(self.ui_dataDesigner_input_addDesignerJp, row[2])
+
+    return True
+
+
+def UpdateSoundBgmFields(self, row):
+    if not row:
+        return False
+
+    dpg.set_value(self.ui_dataSoundBgm_input_addTitle, row[0])
+    dpg.set_value(self.ui_dataSoundBgm_input_addTrackId, int(row[1]))
+
+    return True
 
 def GetMaimaiFilesFromInput(self, version):
 

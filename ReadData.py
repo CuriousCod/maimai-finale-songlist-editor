@@ -23,14 +23,17 @@ def ReadMmMusic(conn, path):
 def ReadMmMusicSingleLine(fileFullname, trackId):
     data = ""
 
-    if os.path.isfile(fileFullname):
+    if not os.path.isfile(fileFullname):
+        print("File not found")
+        return
+    try:
         with open(fileFullname, "r", encoding="UTF16") as f:
             for line in f.readlines():
                 if line.startswith(f"MMMUSIC( {trackId},"):
                     data = line.replace("\n", "").replace("RST_MUSICTITLE_", "").replace("RST_MUSICARTIST_", "")
-    else:
-        print("File not found")
-        return
+    except Exception as e:
+        print(e)
+        return None
 
     return hlp.SplitMusicOrScoreLine(data)
 
@@ -58,17 +61,22 @@ def ReadMmScoreLinesWithTrackId(fileFullname, trackId):
     dataLines = []
     rows = []
 
-    if os.path.isfile(fileFullname):
+    if not os.path.isfile(fileFullname):
+        print("File not found")
+        return None
+
+    try:
         with open(fileFullname, "r", encoding="UTF16") as f:
             for line in f.readlines():
                 if f"eScore_{trackId}" in line:
                     dataLines.append(line.replace("\n", ""))
-    else:
-        print("File not found")
-        return
 
-    for line in dataLines:
-        rows.append(hlp.SplitMusicOrScoreLine(line))
+        for line in dataLines:
+            rows.append(hlp.SplitMusicOrScoreLine(line))
+
+    except Exception as e:
+        print(e)
+        return None
 
     return rows
 
@@ -77,7 +85,11 @@ def ReadMmTextoutLineWithId(fileFullname, trackId, type):
     types = hlp.CommonData
     trackId = hlp.AffixZeroesToString(trackId, 4)
 
-    if os.path.isfile(fileFullname):
+    if not os.path.isfile(fileFullname):
+        print("File not found")
+        return None
+
+    try:
         with open(fileFullname, "r", encoding="UTF16") as f:
             for line in f.readlines():
                 if type == types.artist:
@@ -96,11 +108,24 @@ def ReadMmTextoutLineWithId(fileFullname, trackId, type):
                         line = line[line.rfind("L\"") + 2:line.rfind("\" )")]
                         return line
                 else:
-                    return
-    else:
-        print("File not found")
-        return
+                    print("Could not find data")
+                    return None
+    except Exception as e:
+        print(e)
+        return None
 
+def ReadSoundBgmLineWithId(fileFullname, trackId):
+    trackId = hlp.AffixZeroesToString(trackId, 3)
+
+    if not os.path.isfile(fileFullname):
+        print("File not found")
+        return None
+
+    with open(fileFullname, "r", encoding="UTF8") as f:
+        for line in f.readlines():
+            if trackId in line:
+                line = line.replace("\n", "")
+                return line.split(",")
 
 # def ReadMmScoreLine(fileFullname, trackId):
 #     dataLines = []
