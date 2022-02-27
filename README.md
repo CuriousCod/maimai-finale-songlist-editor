@@ -2,7 +2,7 @@
 Editor for maimai songlist table files
 
 ## Features ##
-Allows the decryption and editing of the following files:
+Allows the decryption/encryption and editing of the following files:
 - mmMusic.bin
 - mmScore.bin
 - mmTextout_ex.bin
@@ -22,23 +22,28 @@ Importing data from older maimai versions is also possible (current only Murasak
 
 ## Usage ##
 
-- Add maimai FiNALE folder to the application using the Select maimai files window
-  -  Run Decrypt Files & Create Database From Files commands from the same window
-  -  This will generate a sqlite database that can be edited using the application or by external sqlite tools
--  Use the Edit maimai FiNALE data window to browse different tracks. 
-  -  By changing the Track ID, the application will automatically look for any data contained under that track ID in the database
-  -  mmMusic tab contains the basic track information
-  -  mmScore tab contains the track's difficulty levels, note that the actual track notechart data is not contained here
-  -  soundBGM tab links the track id to the sound file
-  -  Artist, track name and designer name tabs allow editing the artist's, track's and notechart designer's display name
--  To generate new maimai table files, use the Generate Maimai Files window
-  -  Files need to be also encrypted in order for them to work with FiNALE (except soundBGM.txt)
-  -  Any files contained in the /input folder will be encrypted, (excluding soundBGM.txt)
-  -  Files will be generated into the /output folder and the encrypted files into /output/encrypted
-  -  Copy the files into their respective locations in the maimai game folder
--  To import data from Murasaki add the murasaki files using the Select Maimai Files window
-  -  After adding the files to the application, importing the tracks using the Import Maimai Data From Older Versions window
+- Add maimai FiNALE folder to the application using the **Select maimai files** window
+    -  Run **Decrypt Files** & **Create Database From Files** commands from the same window
+    -  This will generate a sqlite database that can be edited using the application or by external sqlite tools
+-  Use the **Edit maimai FiNALE data** window to browse different tracks. 
+    -  By changing the Track ID, the application will automatically look for any data contained under that track ID in the database
+    -  **mmMusic** tab contains the basic track information
+    -  **mmScore** tab contains the track's difficulty levels, note that the actual track notechart data is not contained here
+    -  **soundBGM** tab links the track id to the sound file
+    -  **Artist, track name and designer name** tabs allow editing the artist's, track's and notechart designer's display name
+-  To generate new maimai table files, use the **Generate Maimai Files** window
+    -  Files need to be also encrypted in order for them to work with FiNALE (except soundBGM.txt)
+    -  Any files contained in the /input folder will be encrypted, (excluding soundBGM.txt)
+    -  Files will be generated into the /output folder and the encrypted files into /output/encrypted
+    -  Copy the files into their respective locations in the maimai game folder
+-  To import data from Murasaki add the murasaki files using the **Select Maimai Files** window
+    -  After adding the files to the application, importing the tracks using the **Import Maimai Data From Older Versions** window
+
+## Preview ##
+
+<img src="https://www.dropbox.com/s/hg5vd9senzlq95h/Otohime.png?raw=1" alt="preview" width="1080" height="520"/>
 
 ### Credits ###
 
 - donmai-me for making the decryption script for maimai files (https://github.com/donmai-me/MaiConverter)
+- DearPyGui developers for making the GUI tools (https://github.com/hoffstadt/DearPyGui)
