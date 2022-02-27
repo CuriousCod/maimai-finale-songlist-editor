@@ -137,6 +137,9 @@ def InitConfig():
 
 
 def CreateWorkDirectories():
+    if not os.path.isdir(f"{os.getcwd()}/output"):
+        os.mkdir(f"{os.getcwd()}/output")
+
     if not os.path.isdir(f"{os.getcwd()}/output/encrypted"):
         os.mkdir(f"{os.getcwd()}/output/encrypted")
 
@@ -1072,15 +1075,14 @@ class GUI:
 
     def LoadConfig(self):
         supportedVersions = ["Finale", "Murasaki"]
+        maimaiFiles = ["mmMusic", "mmScore", "mmTextoutEx", "mmTextoutJp", "soundBgm"]
 
         for version in supportedVersions:
-            files = []
+            files = {0: "", 1: "", 2: "", 3: "", 4: ""}
 
-            files.append(self.config[f"Files{version}"]["mmMusic"])
-            files.append(self.config[f"Files{version}"]["mmScore"])
-            files.append(self.config[f"Files{version}"]["mmTextoutEx"])
-            files.append(self.config[f"Files{version}"]["mmTextoutJp"])
-            files.append(self.config[f"Files{version}"]["soundBgm"])
+            for enum, maimaiFile in enumerate(maimaiFiles):
+                if self.config.has_option(f"Files{version}", maimaiFile):
+                    files[enum] = self.config[f"Files{version}"][maimaiFile]
 
             dgHelp.SetMaimaiFilesFromConfig(self, version, files)
 

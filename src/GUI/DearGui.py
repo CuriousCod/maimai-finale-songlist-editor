@@ -1,6 +1,6 @@
 import dearpygui.dearpygui as dpg
 import src.Helpers as hlp
-
+from typing import List, Dict
 
 def UpdateDataMmMusicFields(self, row):
     if len(row) == 27:
@@ -147,7 +147,7 @@ def GetMaimaiFilesFromInput(self, version):
     return files
 
 
-def SetMaimaiFilesFromConfig(self, version, files):
+def SetMaimaiFilesFromConfig(self, version, files: Dict):
 
     fileVariables = hlp.GetMaimaiVersionFileVariables(self, version)
 
@@ -155,11 +155,11 @@ def SetMaimaiFilesFromConfig(self, version, files):
         print("Unknown version")
         return
 
-    dpg.set_value(fileVariables[0], files[0])
-    dpg.set_value(fileVariables[1], files[1])
-    dpg.set_value(fileVariables[2], files[2])
-    dpg.set_value(fileVariables[3], files[3])
-    dpg.set_value(fileVariables[4], files[4])
+    for enum, file in enumerate(files.values()):
+        if not file:
+            continue
+
+        dpg.set_value(fileVariables[enum], file)
 
 
 def FillTable(table, lines):
