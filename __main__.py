@@ -1,20 +1,16 @@
 import os, sys
-import DatabaseFormat
 import sqlite3 as sq
 import datetime
-import Templates as tmpl
-import Convert as cvrt
-import ReadData as readDat
-import GenerateData as genDat
-import DearGui as dgHelp
-import MaiCrypt
 import tkinter
 import shutil
 import configparser
 from tkinter import filedialog
 from sqlite3 import Error
-import DatabaseActions as dba
-import Helpers as hlp
+from src import Convert as cvrt, Templates as tmpl, \
+    GenerateData as genDat, ReadData as readDat, Helpers as hlp
+from src.GUI import DearGui as dgHelp
+from src.Encryption import MaiCrypt
+from src.Database import DatabaseActions as dba, DatabaseFormat
 import dearpygui.dearpygui as dpg
 
 
@@ -285,6 +281,7 @@ class GUI:
         EncryptFilesInOutput()
         self.AppendLog("Encryption complete")
 
+    # TODO Broken in new DPG versions
     def SelectTableRow(self, table):
         if len(dpg.get_table_selections(table)) > 1:
             # Check if new selection is lower or higher than current selection
@@ -305,6 +302,7 @@ class GUI:
         for col in range(len(dpg.get_table_data(table)[0])):
             dpg.set_table_selection(table, selectedRow, col, True)
 
+    # TODO Broken in new DPG versions
     def GetFirstSelectedCellValue(self, table):
         return dpg.get_table_item(table, dpg.get_table_selections(table)[0][0],
                                   dpg.get_table_selections(table)[0][1])
@@ -674,7 +672,7 @@ class GUI:
             artistEx = dpg.get_value(self.ui_dataArtist_input_addArtistEx)
             artistJp = dpg.get_value(self.ui_dataArtist_input_addArtistJp)
 
-            if artistId == "":
+            if not artistId:
                 return
 
             if not (dba.InsertLineToTextOutArtist(tempConn, [artistId, artistEx, artistJp])):
@@ -691,7 +689,7 @@ class GUI:
             trackEx = dpg.get_value(self.ui_dataTrack_input_addTrackEx)
             trackJp = dpg.get_value(self.ui_dataTrack_input_addTrackJp)
 
-            if trackId == "":
+            if not trackId:
                 return
 
             if not (dba.InsertLineToTextOutTrack(tempConn, [trackId, trackEx, trackJp])):
@@ -708,7 +706,7 @@ class GUI:
             designerEx = dpg.get_value(self.ui_dataDesigner_input_addDesignerEx)
             designerJp = dpg.get_value(self.ui_dataDesigner_input_addDesignerJp)
 
-            if designerId == "":
+            if not designerId:
                 return
 
             if not (dba.InsertLineToTextOutDesigner(tempConn, [designerId, designerEx, designerJp])):
@@ -723,7 +721,7 @@ class GUI:
         elif data == insert.mmMusic:
             trackId = dpg.get_value(self.ui_dataMmMusic_input_addTrackId)
 
-            if trackId == "":
+            if not trackId:
                 return
 
             name = f"eMusic_{hlp.AffixZeroesToString(trackId, 3)}"
@@ -784,7 +782,7 @@ class GUI:
         elif data == insert.mmScore:
             trackId = dpg.get_value(self.ui_dataMmScore_input_addTrackId)
 
-            if trackId == "":
+            if not trackId:
                 return
 
             # Get all rows where score id is not 0
