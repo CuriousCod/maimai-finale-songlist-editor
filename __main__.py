@@ -309,7 +309,7 @@ class GUI:
 
     def ActivateDisplay(self):
         dpg.create_context()
-        dpg.create_viewport(title="Otohime - maimai FiNALE data editor")
+        dpg.create_viewport(title="Otohime - maimai FiNALE songlist editor")
         dpg.setup_dearpygui()
 
         data = hlp.CommonData
