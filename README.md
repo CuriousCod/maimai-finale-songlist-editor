@@ -17,7 +17,7 @@ Importing data from older maimai versions is also possible (current only Murasak
 
 - Application has been developed and tested using Python 3.9.1
 - Install the required modules listed in the requirements.txt
-- File decryption requires key.txt containing the maimai FiNALE AES key to be placed next to the __main__.py file.'
+- File decryption requires key.txt containing the maimai FiNALE AES key to be placed next to the __main__.py file.
 - Start the application by running __main__.py
 
 ## Usage ##
