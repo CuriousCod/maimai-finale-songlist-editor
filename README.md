@@ -1,6 +1,10 @@
 # Otohime - maimai FiNALE songlist editor
 Editor for maimai songlist table files
 
+## Preview ##
+
+<img src="https://www.dropbox.com/s/hg5vd9senzlq95h/Otohime.png?raw=1" alt="preview" width="1080" height="520"/>
+
 ## Features ##
 Allows the decryption/encryption and editing of the following files:
 - mmMusic.bin
@@ -38,10 +42,6 @@ Importing data from older maimai versions is also possible (current only Murasak
     -  Copy the files into their respective locations in the maimai game folder
 -  To import data from Murasaki add the murasaki files using the **Select Maimai Files** window
     -  After adding the files to the application, importing the tracks using the **Import Maimai Data From Older Versions** window
-
-## Preview ##
-
-<img src="https://www.dropbox.com/s/hg5vd9senzlq95h/Otohime.png?raw=1" alt="preview" width="1080" height="520"/>
 
 ### Credits ###
 
