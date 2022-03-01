@@ -46,4 +46,4 @@ Importing data from older maimai versions is also possible (current only Murasak
 ### Credits ###
 
 - donmai-me for making the encryption/decryption script for maimai files (https://github.com/donmai-me/MaiConverter)
-- DearPyGui developers for making the GUI tools (https://github.com/hoffstadt/DearPyGui)
+- DearPyGui developers for making the GUI framework (https://github.com/hoffstadt/DearPyGui)
