@@ -1,6 +1,31 @@
 import sqlite3 as sq
 from sqlite3 import Error
 
+from src.Database import DatabaseFormat
+
+
+def CreateConnection(db_file):
+    """ create a database connection to a SQLite database """
+    try:
+        conn = sq.connect(db_file)
+        # print(sq.sqlite_version)
+        return conn
+    except Error as e:
+        print(e)
+
+
+def CreateTable(conn, table):
+    try:
+        c = conn.cursor()
+        c.execute(table)
+    except Error as e:
+        print(e)
+
+
+def InitDb(conn):
+    for table in DatabaseFormat.Tables:
+        CreateTable(conn, table)
+
 
 def ExecuteSql(conn, sql, line):
     cur = conn.cursor()

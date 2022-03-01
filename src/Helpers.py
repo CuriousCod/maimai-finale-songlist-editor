@@ -1,4 +1,5 @@
 from enum import Enum
+import os
 
 
 # Common names used around in the application
@@ -109,3 +110,17 @@ def GetMaimaiVersionFileVariables(self, version: str) -> list:
         fileVariables.append(self.ui_filesMurasaki_input_soundBgm)
 
     return fileVariables
+
+
+def CreateWorkDirectories():
+    if not os.path.isdir(f"{os.getcwd()}/output"):
+        os.mkdir(f"{os.getcwd()}/output")
+
+    if not os.path.isdir(f"{os.getcwd()}/output/encrypted"):
+        os.mkdir(f"{os.getcwd()}/output/encrypted")
+
+    if not os.path.isdir(f"{os.getcwd()}/input/"):
+        os.mkdir(f"{os.getcwd()}/input/")
+
+    if not os.path.isdir(f"{os.getcwd()}/database/"):
+        os.mkdir(f"{os.getcwd()}/database/")

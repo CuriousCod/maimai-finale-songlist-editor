@@ -1,20 +1,17 @@
-import os, sys
-import sqlite3 as sq
+import os
 import datetime
 import tkinter
 import shutil
 import configparser
 from tkinter import filedialog
-from sqlite3 import Error
-from src import Convert as cvrt, Templates as tmpl, \
+from src import Convert as cvrt, \
     GenerateData as genDat, ReadData as readDat, Helpers as hlp
-from src.GUI import DearGui as dgHelp
+from src.GUI import DearGuiHelper as dgHelp
 from src.Encryption import MaiCrypt
 from src.Database import DatabaseActions as dba, DatabaseFormat
 import dearpygui.dearpygui as dpg
 
-
-# TODO Display all ids without data
+# TODO Display all unused track ids
 # TODO Function to check all data connections for an id
 # TODO Import all required data from other maimai versions based on mmusic id
 # TODO Support for mmMusic event field
@@ -23,55 +20,19 @@ import dearpygui.dearpygui as dpg
 # TODO Make sort id easier to understand/automatic (01 -> a, 02 -> b, etc)
 
 
-def CreateConnection(db_file):
-    """ create a database connection to a SQLite database """
-    try:
-        conn = sq.connect(db_file)
-        # print(sq.sqlite_version)
-        return conn
-    except Error as e:
-        print(e)
-        sys.exit(1)
-
-
-def CreateTable(conn, table):
-    try:
-        c = conn.cursor()
-        c.execute(table)
-    except Error as e:
-        print(e)
-
-
-def InitDb(conn):
-    for table in DatabaseFormat.Tables:
-        CreateTable(conn, table)
-
-
 def LoadFilesIntoNewDb(path, db):
     if not db:
         return
 
-    conn = CreateConnection(db)
+    conn = dba.CreateConnection(db)
 
-    InitDb(conn)
+    dba.InitDb(conn)
 
     readDat.ReadMmMusic(conn, path)
     readDat.ReadMmScore(conn, path)
     readDat.ReadTextOutEx(conn, path)
     readDat.ReadTextOutJp(conn, path)
     readDat.ReadSoundBgm(conn, path)
-
-    conn.close()
-
-
-def GenerateFilesFromDb(db):
-    conn = CreateConnection(db)
-
-    tmpl.CreateMmMusicFromTemplate(genDat.GenerateMmMusicFromDb(conn))
-    tmpl.CreateMmScoreFromTemplate(genDat.GenerateMmScoreFromDb(conn))
-    tmpl.CreateSoundBgmFromTemplate(genDat.GenerateSoundBgmFromDb(conn))
-    tmpl.CreateMmTextOutEx(genDat.GenerateMmTextoutExFromDb(conn))
-    tmpl.CreateMmTextOutJp(genDat.GenerateMmTextoutJpFromDb(conn))
 
     conn.close()
 
@@ -136,37 +97,23 @@ def InitConfig():
     return os.getcwd() + "\\config.ini"
 
 
-def CreateWorkDirectories():
-    if not os.path.isdir(f"{os.getcwd()}/output"):
-        os.mkdir(f"{os.getcwd()}/output")
-
-    if not os.path.isdir(f"{os.getcwd()}/output/encrypted"):
-        os.mkdir(f"{os.getcwd()}/output/encrypted")
-
-    if not os.path.isdir(f"{os.getcwd()}/input/"):
-        os.mkdir(f"{os.getcwd()}/input/")
-
-    if not os.path.isdir(f"{os.getcwd()}/database/"):
-        os.mkdir(f"{os.getcwd()}/database/")
-
-
 class GUI:
     def __init__(self):
-        CreateWorkDirectories()
+        hlp.CreateWorkDirectories()
 
         self.config = configparser.ConfigParser()
         self.config.read(InitConfig())
 
         self.db = self.config["Database"]["Name"]
-        conn = CreateConnection(self.db)
-        InitDb(conn)
+        conn = dba.CreateConnection(self.db)
+        dba.InitDb(conn)
         conn.close()
 
         self.ActivateDisplay()
 
     def DisplayTable(self, sender, app_data, user_data):
         # Callbacks run on a separate thread, sqlite doesn't like that
-        tempConn = CreateConnection(self.db)
+        tempConn = dba.CreateConnection(self.db)
         table = hlp.CommonData
 
         data = user_data
@@ -221,12 +168,14 @@ class GUI:
         else:  # load
             file = filedialog.askopenfilename(title=f"Load Database", filetypes=[("Database files", "*.db")])
 
-        if file:
-            if not file.endswith(".db"):
-                file = f"{file}.db"
+        if not file:
+            return None
 
-            dpg.set_value(self.ui_filesFinale_input_dbName, file)
-            self.db = file
+        if not file.endswith(".db"):
+            file = f"{file}.db"
+
+        dpg.set_value(self.ui_filesFinale_input_dbName, file)
+        self.db = file
 
         return file
 
@@ -275,7 +224,7 @@ class GUI:
             pass
 
     def GenerateAndEncryptFiles(self):
-        GenerateFilesFromDb(self.db)
+        genDat.GenerateFilesFromDb(self.db)
         self.AppendLog("Files created")
 
         if not dpg.get_value(self.ui_generate_checkbox_encryptFiles):
@@ -667,7 +616,7 @@ class GUI:
     def InsertDataToDb(self, sender, app_data, user_data):
         data = user_data
 
-        tempConn = CreateConnection(self.db)
+        tempConn = dba.CreateConnection(self.db)
         insert = hlp.CommonData
 
         if data == insert.artist:
@@ -834,7 +783,7 @@ class GUI:
     def GetDataFromDb(self, sender, app_data, user_data):
         data = user_data
 
-        tempConn = CreateConnection(self.db)
+        tempConn = dba.CreateConnection(self.db)
         get = hlp.CommonData
 
         if data == get.artist:

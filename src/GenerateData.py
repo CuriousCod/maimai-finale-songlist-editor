@@ -1,5 +1,6 @@
-from src.Database import DatabaseActions as dba
+import src.Database.DatabaseActions as dba
 import src.Helpers as hlp
+import src.Templates as tmpl
 
 
 def GenerateMmMusicFromDb(conn):
@@ -148,3 +149,15 @@ def GenerateSoundBgmFromDb(conn):
         lines.append(f"{row[0]},{row[1]}")
 
     return lines
+
+
+def GenerateFilesFromDb(db):
+    conn = dba.CreateConnection(db)
+
+    tmpl.CreateMmMusicFromTemplate(GenerateMmMusicFromDb(conn))
+    tmpl.CreateMmScoreFromTemplate(GenerateMmScoreFromDb(conn))
+    tmpl.CreateSoundBgmFromTemplate(GenerateSoundBgmFromDb(conn))
+    tmpl.CreateMmTextOutEx(GenerateMmTextoutExFromDb(conn))
+    tmpl.CreateMmTextOutJp(GenerateMmTextoutJpFromDb(conn))
+
+    conn.close()

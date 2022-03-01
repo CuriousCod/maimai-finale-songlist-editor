@@ -2,6 +2,7 @@ import dearpygui.dearpygui as dpg
 import src.Helpers as hlp
 from typing import List, Dict
 
+
 def UpdateDataMmMusicFields(self, row):
     if len(row) == 27:
         dpg.set_value(self.ui_dataMmMusic_input_addVersion, int(row[2]))
